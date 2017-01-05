@@ -1,0 +1,30 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "520FFB7FEDE997E28E567F5F921C7EB536DEB8B1",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "7ED0D15754D9EE08B829B967643A20055B98F6F4" : 9223372036854775807,
+    "520FFB7FEDE997E28E567F5F921C7EB536DEB8B1" : 9223372036854775807
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "70908401-4BD3-4E86-A1AC-93304FB573C8",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "7ED0D15754D9EE08B829B967643A20055B98F6F4" : "..\/..\/addons\/ofxGeo",
+    "520FFB7FEDE997E28E567F5F921C7EB536DEB8B1" : "SensorFuse\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "SensorFuse",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "SensorFuse.xcodeproj",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/vertigo-dk\/SensorFuse.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "520FFB7FEDE997E28E567F5F921C7EB536DEB8B1"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/bakercp\/ofxGeo.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "7ED0D15754D9EE08B829B967643A20055B98F6F4"
+    }
+  ]
+}

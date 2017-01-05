@@ -2,11 +2,11 @@
 
 #include "ofMain.h"
 #include "ofxOsc.h"
+#include "Sensor.h"
 
 #define PORT 49161
 #define NUM_MSG_STRINGS 20
-
-
+#define DEBUG 1
 
 class ofApp : public ofBaseApp{
 
@@ -28,36 +28,39 @@ class ofApp : public ofBaseApp{
 		void gotMessage(ofMessage msg);
         ofTrueTypeFont		font;
     
-
-    
-    
     // Gates
-    vector<ofVec3f> gates;
+    //vector<ofVec3f> gates;
     
     
-    //Gate properties - make them into objects?
-    float oscX = 1.0;
-    float oscY = 1.0;
-    float oscZ = 1.0;
-    float color = 1.0;
+    //amount of time until message fades
+    float fadeTime;
     
-    
-    string messageText = "hello";
     
     //Geo data
-    ofVec3f gate1Geo = ofVec3f(-50,1,0);
+    //ofVec3f gate1Geo = ofVec3f(-50,1,0);
 
     
   //  private:
         ofxOscReceiver	receiver;
     
         int				current_msg_string;
-        string		msg_strings[NUM_MSG_STRINGS];
+        string          msg_strings[NUM_MSG_STRINGS];
         float			timers[NUM_MSG_STRINGS];
     
-        int				mouseX, mouseY;
-        string			mouseButtonState;
-
+    
+//        int				mouseX, mouseY;
+//        string			mouseButtonState;
+    
+    //OSC address split
+    vector<string>  msgTokens;
+    //vector<Sensor>  sensors;
+    
+    
+    vector<string>  artnetAddrs{"000", "016", "032"}; //list of artnetAddress
+    
+    //const int lastArtNetAddr = 32;
+    Sensor sensors[32];
+    
     
 };
 
