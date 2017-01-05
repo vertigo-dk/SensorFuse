@@ -1,0 +1,4 @@
+ofxGeo
+ofxGui
+ofxOsc
+ofxVectorGraphics
