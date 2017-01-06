@@ -14,6 +14,7 @@ void ofApp::setup(){
     // listen on the given port
     cout << "listening for osc messages on port " << PORT << "\n";
     receiver.setup( PORT );
+    sender.setup( SENDHOST, SENDPORT );
     
     current_msg_string = 0;
     
@@ -116,18 +117,22 @@ void ofApp::draw(){
     ofSetColor(ofColor::white);
 
     string buf;
-    buf = "listening for osc messages on port" + ofToString( PORT );
+    buf = "listening for osc messages on port" + ofToString( PORT ) + "\n";
+    buf += "press A to send osc message [/BeamBreak/016 0-1]";
     ofDrawBitmapString( buf, 10, 20 );
-    
+//    ofDrawBitmapString( "press A to send osc message [/BeamBreak/016 0-1]", 10, 80 );
+
     
     for ( int i=0; i<NUM_MSG_STRINGS; i++ ){
-        ofDrawBitmapString( msg_strings[i], 10, 40+15*i );
+        ofDrawBitmapString( msg_strings[i], 10, 70+15*i );
     }
 
 
     //quick and dirty "print" with sensor@16
     //ofDrawBitmapString( sensors[16].toString(), 10, 200 );
     
+    ofPushMatrix();
+    ofTranslate(400, 50);
     
     //quick and dirty drawing of gate
     Sensor sensor16 = sensors[16];
@@ -138,14 +143,15 @@ void ofApp::draw(){
     }else{
         ofSetColor(ofColor::green);
     }
-    ofDrawLine(200,50,200,100);
+    ofDrawLine(0,0,0,50);
     
     if(sensor16.isTriggered()){
         ofSetColor(ofColor::red);
     }else{
         ofSetColor(ofColor::green);
     }
-    ofDrawLine(200,100,200,150);
+    ofDrawLine(0,50,0,100);
+    ofPopMatrix();
  
 }
 
@@ -153,15 +159,12 @@ void ofApp::draw(){
 void ofApp::keyPressed(int key){
 
     if ( key =='a' || key == 'A' ){
-        
+        ofxOscMessage m;
+        m.setAddress( "/BeamBreak/016" );
+        m.addIntArg( 0 );
+        sender.sendMessage( m );
     }
     
-}
-
-//--------------------------------------------------------------
-void ofApp::drawSensor(Sensor sensor){
-    
-
 }
 
 
@@ -169,8 +172,22 @@ void ofApp::drawSensor(Sensor sensor){
 //--------------------------------------------------------------
 void ofApp::keyReleased(int key){
     
+    if ( key =='a' || key == 'A' ){
+        ofxOscMessage m;
+        m.setAddress( "/BeamBreak/016" );
+        m.addIntArg( 1 );
+        sender.sendMessage( m );
+    }
 
 }
+
+//todo
+//--------------------------------------------------------------
+void ofApp::drawSensor(Sensor sensor){
+    
+    
+}
+
 
 //--------------------------------------------------------------
 void ofApp::mouseMoved(int x, int y ){

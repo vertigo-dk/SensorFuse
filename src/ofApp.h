@@ -6,8 +6,12 @@
 #include "GateSF.h"
 
 #define PORT 49161
-#define NUM_MSG_STRINGS 40
+#define NUM_MSG_STRINGS 30
 #define DEBUG 1
+
+#define SENDHOST "localhost"
+#define SENDPORT 49161
+
 
 class ofApp : public ofBaseApp{
 
@@ -16,6 +20,7 @@ class ofApp : public ofBaseApp{
 		void update();
 		void draw();
     
+        //todo
         void drawSensor(Sensor sensor);
 
 		void keyPressed(int key);
@@ -43,12 +48,13 @@ class ofApp : public ofBaseApp{
     //ofVec3f gate1Geo = ofVec3f(-50,1,0);
 
     
-  //  private:
-        ofxOscReceiver	receiver;
+  
+    ofxOscReceiver	receiver;
+    ofxOscSender sender;
     
-        int				current_msg_string;
-        string          msg_strings[NUM_MSG_STRINGS];
-        float			timers[NUM_MSG_STRINGS];
+    int				current_msg_string;
+    string          msg_strings[NUM_MSG_STRINGS];
+    float			timers[NUM_MSG_STRINGS];
     
     
     //OSC address split
