@@ -98,6 +98,7 @@
 		4E95FB446A9C9C6F0DE12D75 /* OscPrintReceivedElements.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = OscPrintReceivedElements.h; path = ../../../addons/ofxOsc/libs/oscpack/src/osc/OscPrintReceivedElements.h; sourceTree = SOURCE_ROOT; };
 		52AFA1F08C420992CAAAE648 /* ofxSlider.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxSlider.h; path = ../../../addons/ofxGui/src/ofxSlider.h; sourceTree = SOURCE_ROOT; };
 		53E804431E1E955600833067 /* Sensor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Sensor.h; sourceTree = "<group>"; };
+		53E804441E1FE20800833067 /* GateSF.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GateSF.h; sourceTree = "<group>"; };
 		57AC19537D7E9DC0B7F69F97 /* UTMLocationBounds.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = UTMLocationBounds.cpp; path = ../../../addons/ofxGeo/libs/ofxGeo/src/UTMLocationBounds.cpp; sourceTree = SOURCE_ROOT; };
 		604BB71B812E172AD8FA62C9 /* UTMLocation.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = UTMLocation.cpp; path = ../../../addons/ofxGeo/libs/ofxGeo/src/UTMLocation.cpp; sourceTree = SOURCE_ROOT; };
 		63A47AC60FFAFC3BF093EC0F /* OscOutboundPacketStream.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = OscOutboundPacketStream.cpp; path = ../../../addons/ofxOsc/libs/oscpack/src/osc/OscOutboundPacketStream.cpp; sourceTree = SOURCE_ROOT; };
@@ -440,6 +441,7 @@
 				E4B69E1E0A3A1BDC003C02F2 /* ofApp.cpp */,
 				E4B69E1F0A3A1BDC003C02F2 /* ofApp.h */,
 				53E804431E1E955600833067 /* Sensor.h */,
+				53E804441E1FE20800833067 /* GateSF.h */,
 			);
 			path = src;
 			sourceTree = SOURCE_ROOT;

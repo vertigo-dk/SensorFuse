@@ -3,9 +3,10 @@
 #include "ofMain.h"
 #include "ofxOsc.h"
 #include "Sensor.h"
+#include "GateSF.h"
 
 #define PORT 49161
-#define NUM_MSG_STRINGS 20
+#define NUM_MSG_STRINGS 40
 #define DEBUG 1
 
 class ofApp : public ofBaseApp{
@@ -14,6 +15,8 @@ class ofApp : public ofBaseApp{
 		void setup();
 		void update();
 		void draw();
+    
+        void drawSensor(Sensor sensor);
 
 		void keyPressed(int key);
 		void keyReleased(int key);
@@ -48,17 +51,15 @@ class ofApp : public ofBaseApp{
         float			timers[NUM_MSG_STRINGS];
     
     
-//        int				mouseX, mouseY;
-//        string			mouseButtonState;
-    
     //OSC address split
     vector<string>  msgTokens;
-    //vector<Sensor>  sensors;
     
     
     vector<string>  artnetAddrs{"000", "016", "032"}; //list of artnetAddress
     
     //const int lastArtNetAddr = 32;
+    //vector<Sensor>  sensors;
+    //using array is faster?
     Sensor sensors[32];
     
     

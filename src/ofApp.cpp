@@ -1,3 +1,11 @@
+//
+//  SensorFuse
+//
+//  Created by Keith Lim on 3/1/17.
+//
+// Models the interactive state of Gates and Sensors and attempts to interperate where Users are, and return that as OSC GPS co-ordinates
+
+
 #include "ofApp.h"
 
 //--------------------------------------------------------------
@@ -11,7 +19,8 @@ void ofApp::setup(){
     
     ofBackground( 30, 30, 130 );
     
-    fadeTime = 5.0f;
+    //fadetime on the message display
+    fadeTime = 20.0f;
     
     //list of ArtNetAddress
     
@@ -51,30 +60,39 @@ void ofApp::update(){
 
         string msg_string;
         msg_string = m.getAddress();
-        msgTokens = ofSplitString(msg_string, "/");
+        //ignore empty tokens = true
+        msgTokens = ofSplitString(msg_string, "/", true);
 
         
-        if(msgTokens[1] == "BeamBreak"){
+        if(msgTokens[0] == "BeamBreak"){
             
             //get artnet address from OSC Message
-            int artnet = ofToInt(msgTokens[2]);
+            int artnet = ofToInt(msgTokens[1]);
             
             //get value of BeamBreak, 0=false, 1=true
             int value = m.getArgAsInt32(0);
             
+            long timeTriggered = ofGetElapsedTimeMillis();
+            
             //add trigger value and timestamp to sensor@artnetAddr
-            sensors[artnet].add(ofGetElapsedTimeMillis(),value);
+            sensors[artnet].add(timeTriggered,value);
             
             if(DEBUG){
                 string tempstr = "obj:";
                 tempstr += sensors[artnet].toString();
                 cout << tempstr << "\n";
             }
+
+            msg_string += " value=";
+            msg_string += ofToString(value);
+            msg_string += " time=";
+            msg_string += ofToString(timeTriggered);
+            
         }
         
-        {/*
-        msg_string += "t0=";
-        msg_string += msgTokens[0]; //first token is empty because of leading "/"
+        {
+        /*
+         msg_string += msgTokens[0]; //first token is empty because of leading "/"
         msg_string += "|t1=";
         msg_string += msgTokens[1]; //expect "BeamBreak"
         msg_string += "|t2=";
@@ -95,25 +113,40 @@ void ofApp::update(){
 //--------------------------------------------------------------
 void ofApp::draw(){
     
+    ofSetColor(ofColor::white);
+
     string buf;
     buf = "listening for osc messages on port" + ofToString( PORT );
     ofDrawBitmapString( buf, 10, 20 );
     
-    // draw mouse state
-//    buf = "mouse: " + ofToString( mouseX, 4) +  " " + ofToString( mouseY, 4 );
-//    ofDrawBitmapString( buf, 430, 20 );
-//    ofDrawBitmapString( mouseButtonState, 580, 20 );
     
     for ( int i=0; i<NUM_MSG_STRINGS; i++ ){
         ofDrawBitmapString( msg_strings[i], 10, 40+15*i );
     }
 
 
-    //quick and dirty print
-    
+    //quick and dirty "print" with sensor@16
     //ofDrawBitmapString( sensors[16].toString(), 10, 200 );
     
-
+    
+    //quick and dirty drawing of gate
+    Sensor sensor16 = sensors[16];
+    ofSetLineWidth(4);
+    
+    if(sensor16.currentValue == 0){
+        ofSetColor(ofColor::red);
+    }else{
+        ofSetColor(ofColor::green);
+    }
+    ofDrawLine(200,50,200,100);
+    
+    if(sensor16.isTriggered()){
+        ofSetColor(ofColor::red);
+    }else{
+        ofSetColor(ofColor::green);
+    }
+    ofDrawLine(200,100,200,150);
+ 
 }
 
 //--------------------------------------------------------------
@@ -124,6 +157,14 @@ void ofApp::keyPressed(int key){
     }
     
 }
+
+//--------------------------------------------------------------
+void ofApp::drawSensor(Sensor sensor){
+    
+
+}
+
+
 
 //--------------------------------------------------------------
 void ofApp::keyReleased(int key){
