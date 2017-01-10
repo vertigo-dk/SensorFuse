@@ -4,6 +4,7 @@
 #include "ofxOsc.h"
 #include "Sensor.h"
 #include "GateSF.h"
+#include <array>
 
 #define PORT 49161
 #define NUM_MSG_STRINGS 30
@@ -62,11 +63,17 @@ class ofApp : public ofBaseApp{
     
     
     vector<string>  artnetAddrs{"000", "016", "032"}; //list of artnetAddress
+
+
+    vector<int> gateDisplay;
+
     
     //const int lastArtNetAddr = 32;
     //vector<Sensor>  sensors;
     //using array is faster?
-    Sensor sensors[32];
+    //Sensor sensors[32];
+    vector<Sensor> sensors;
+    
     
     
 };

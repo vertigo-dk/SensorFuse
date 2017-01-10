@@ -30,13 +30,17 @@ void ofApp::setup(){
     
     
     //might be nice to check max value of artnetAddrs and make the array of that one
-    
+
+    sensors.reserve(32);
     for(int i=0; i<artnetAddrs.size(); i++){
         //init Sensor objects in the artnetAddrs list
         Sensor sensor = Sensor(artnetAddrs[i]);
         int artnet = ofToInt(artnetAddrs[i]);
         sensors[artnet] = sensor;
     }
+    
+    gateDisplay.push_back(1);
+    
     
 }
 
