@@ -104,11 +104,8 @@ void ofApp::draw(){
     }
     
     
-
-    //drawing our test gate
+    //get test sensor
     testSensor = sensors[16];
-    
-    
     
     //populate gateDisplay to show gate display over time
     if(!testSensor.isNoSense() ){
@@ -116,7 +113,7 @@ void ofApp::draw(){
         //change refresh rate?
         //bool refresh = (ofGetElapsedTimeMillis() % 500 == 0);
 
-        float curVal = testSensor.currentValue();
+        float curVal = testSensor.getCurrentValue();
         float trigVal = testSensor.isTriggered();
         //cout << "curVal:" << curVal << " trigval:" << trigVal << "\n";
         

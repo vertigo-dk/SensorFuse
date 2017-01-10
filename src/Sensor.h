@@ -42,7 +42,6 @@ public:
     //Most recent first
     vector<int> values; //0=beam broken, 1=beam unbroken
     vector<long> timestamps; //in millisec
-    //    int currentValue; //current state of the laser, should be the same as values.last()
     
     
     //FUNCTIONS
@@ -50,27 +49,22 @@ public:
     //values and timestamps vectors ordered by most recent first
     void add(int value , long time){
 
-        
-        //only add on a rising or falling edge... i.e ignore timestamp if values match
+        //only add on a rising or falling edge...
         if(values.size() > 0){
             if(values[0] == value){
-                //acutally, do nothing, we might want to change this logic, only applies to keyboard input presumably.
+                //i.e ignore timestamp if values match
                 //timestamps[0] = time;
+                //do nothing, we might want to change this logic, only applies to keyboard input presumably.
             }else{
                 values.insert(values.begin(), value);
                 timestamps.insert(timestamps.begin(), time);
             }
         }
-        //cout << "added:" << value << "@" << time <<"\n";
-        //        currentValue = value;
-        
         if(values.size() > 4 && timestamps.size() > 4){
             //we keep the last 4 values, delete the rest.
             values.resize(4);
             timestamps.resize(4);
         }
-        
-        
     }
     
     string toString(){
@@ -87,10 +81,6 @@ public:
         }
         str += "}\n";
         return str;
-    }
-    
-    int currentValue(){
-        return values[0];
     }
     
     
@@ -159,10 +149,12 @@ public:
         return (values.empty());
     }
     
-    //
-    bool triggerLogic(){
-        
+    
+    int getCurrentValue(){
+        return values[0];
     }
+    
+
 
     
 };
