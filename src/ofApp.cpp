@@ -29,48 +29,39 @@ void ofApp::setup(){
         gates[ofToInt(addressName)] = GateSF(addressName);
     }
     
-    
-    //gateDisplay.clear();
-    //std::vector<ofVec2f>::iterator it = gateBarDisplay.begin();
-    gateDisplay.resize(40);
-    gateDisplay.push_back(ofVec2f(1.0f, 1.0f));
-    
-    //for quick and dirty drawing of gate
-    
+    gateDisplay.resize(NUM_GATE_DISPLAY);
     
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
-    
-    
-    // hide old messages
+ 
+    //Cleanup/Hide old display strings
     for ( int i=0; i<NUM_MSG_STRINGS; i++ ){
         if ( timers[i] < ofGetElapsedTimef() - fadeTime )
             msg_strings[i] = "";
     }
+
     
-    // check for waiting messages
+    //PARSE OSC
     while( receiver.hasWaitingMessages() ){
-        // get the next message
         ofxOscMessage m;
         receiver.getNextMessage( &m );
         
         string msg_string;
+        msg_string = m.getAddress(); //expect "/BeamBreak/[artnetaddr] [0-1]"
+        msgTokens = ofSplitString(msg_string, "/", true); //ignore (leading) empty token = true
         
-        //expect "/BeamBreak/[artnetaddr] [0-1]"
-        msg_string = m.getAddress();
-        //ignore (leading) empty token = true
-        msgTokens = ofSplitString(msg_string, "/", true);
         
         if(msgTokens[0] == "BeamBreak"){
-            long timeTriggered = ofGetElapsedTimeMillis();
             
+            //convert artnet string for easy array access
+            int artnet = ofToInt(msgTokens[1]);
             //get value of BeamBreak, 0=false, 1=true
             int value = m.getArgAsInt32(0);
-            
+            long timeTriggered = ofGetElapsedTimeMillis();
+
             //add trigger value and timestamp to sensor@artnetAddr
-            int artnet = ofToInt(msgTokens[1]);
             sensors[artnet].add(value,timeTriggered);
             
             if(DEBUG){
@@ -78,40 +69,12 @@ void ofApp::update(){
                 tempstr += sensors[artnet].toString();
                 cout << tempstr << "\n";
                 
-                //for quick and dirty drawing of gate
-                testSensor = sensors[16];
-                
-                //populate gateDisplay to show gate display over time
-                if(!testSensor.isNoSense()){
-                    float curVal = testSensor.currentValue();
-                    float trigVal = testSensor.isTriggered();
-                    cout << "curVal:" << curVal << " trigval:" << trigVal << "\n";
-                    
-                    //insert to begining of vector
-                    gateDisplay.insert( gateDisplay.begin(), ofVec2f(curVal , trigVal) );
-                    //gateDisplay.push_back(ofVec2f(1,1));
-                }
-                
-                if (gateDisplay.size() > NUM_GATE_DISPLAY){
-                    gateDisplay.resize(NUM_GATE_DISPLAY);
-                }
-                
             }
             msg_string += " value=";
             msg_string += ofToString(value);
             msg_string += " time=";
             msg_string += ofToString(timeTriggered);
         }
-        
-        {/*
-          msg_string += msgTokens[0]; //first token is empty because of leading "/"
-          msg_string += "|t1=";
-          msg_string += msgTokens[1]; //expect "BeamBreak"
-          msg_string += "|t2=";
-          msg_string += msgTokens[2]; //expect artnet address, eg "016"
-          msg_string += "|arg0=";
-          msg_string += ofToString( m.getArgAsInt32( 0 ) ); //expect 0|1
-          */}
         
         // add to the list of strings to display
         msg_strings[current_msg_string] = msg_string;
@@ -129,21 +92,44 @@ void ofApp::draw(){
     
     string buf;
     buf = "listening for osc messages on port" + ofToString( PORT ) + "\n";
-    buf += "press A to send osc message [/BeamBreak/016 0-1]";
+    buf += "press and release A to send osc message [/BeamBreak/016 0-1]\n";
+    buf += "press D to send osc message [/BeamBreak/016 0]\n";
+    buf += "press F to send osc message [/BeamBreak/016 1]\n";
     ofDrawBitmapString( buf, 10, 20 );
     //    ofDrawBitmapString( "press A to send osc message [/BeamBreak/016 0-1]", 10, 80 );
     
     
     for ( int i=0; i<NUM_MSG_STRINGS; i++ ){
-        ofDrawBitmapString( msg_strings[i], 10, 70+15*i );
+        ofDrawBitmapString( msg_strings[i], 10, 90+15*i );
     }
     
     
     //quick and dirty "print" with sensor@16
-    //ofDrawBitmapString( sensors[16].toString(), 10, 200 );
+
+    //for quick and dirty drawing of gate
+    testSensor = sensors[16];
     
+    //populate gateDisplay to show gate display over time
+    
+    //refresh rate of
+    //bool refresh = (ofGetElapsedTimeMillis() % 500 == 0);
+    
+    if(!testSensor.isNoSense() ){
+        float curVal = testSensor.currentValue();
+        float trigVal = testSensor.isTriggered();
+        //cout << "curVal:" << curVal << " trigval:" << trigVal << "\n";
+        
+        //insert to begining of vector
+        gateDisplay.insert( gateDisplay.begin(), ofVec2f(curVal , trigVal) );
+        //gateDisplay.push_back(ofVec2f(1,1));
+    }
+    
+    if (gateDisplay.size() > NUM_GATE_DISPLAY){
+        gateDisplay.resize(NUM_GATE_DISPLAY);
+    }
+
     ofPushMatrix();
-    ofTranslate(400, 50);
+    ofTranslate(400, 70);
     ofSetLineWidth(4);
     int curDisplay = 0;
     int yOffset = 5;
@@ -176,9 +162,6 @@ void ofApp::draw(){
             curDisplay++;
         }
     }
-    
-    
-    
     ofPopMatrix();
     
 }
@@ -192,6 +175,23 @@ void ofApp::keyPressed(int key){
         m.addIntArg( 0 );
         sender.sendMessage( m );
     }
+
+    
+    if ( key =='d' || key == 'D' ){
+        ofxOscMessage m;
+        m.setAddress( "/BeamBreak/016" );
+        m.addIntArg( 0 );
+        sender.sendMessage( m );
+    }
+
+    if ( key =='f' || key == 'F' ){
+        ofxOscMessage m;
+        m.setAddress( "/BeamBreak/016" );
+        m.addIntArg( 1 );
+        sender.sendMessage( m );
+    }
+    
+    
     
 }
 

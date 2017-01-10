@@ -7,7 +7,7 @@
 
 #define PORT 49161
 #define NUM_MSG_STRINGS 30
-#define NUM_GATE_DISPLAY 50
+#define NUM_GATE_DISPLAY 100
 #define DEBUG 1
 
 #define SENDHOST "localhost"
