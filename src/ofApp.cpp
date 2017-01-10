@@ -104,24 +104,23 @@ void ofApp::draw(){
     }
     
     
-    //quick and dirty "print" with sensor@16
 
-    //for quick and dirty drawing of gate
+    //drawing our test gate
     testSensor = sensors[16];
     
+    
+    
     //populate gateDisplay to show gate display over time
-    
-    //refresh rate of
-    //bool refresh = (ofGetElapsedTimeMillis() % 500 == 0);
-    
     if(!testSensor.isNoSense() ){
+
+        //change refresh rate?
+        //bool refresh = (ofGetElapsedTimeMillis() % 500 == 0);
+
         float curVal = testSensor.currentValue();
         float trigVal = testSensor.isTriggered();
         //cout << "curVal:" << curVal << " trigval:" << trigVal << "\n";
         
-        //insert to begining of vector
         gateDisplay.insert( gateDisplay.begin(), ofVec2f(curVal , trigVal) );
-        //gateDisplay.push_back(ofVec2f(1,1));
     }
     
     if (gateDisplay.size() > NUM_GATE_DISPLAY){
@@ -142,15 +141,15 @@ void ofApp::draw(){
         for(int i = 0 ; i < gateDisplay.size() ; i++){
             
             ofVec2f curGateVal = gateDisplay[i];
-            //beam is broken = 0, but for display we'll reverse the logic
-            if(curGateVal.x == 1.0f){
+            //beam is broken = 0,
+            if(curGateVal.x == 0.0f){
                 ofSetColor(ofColor::green);
             }else{
                 ofSetColor(ofColor::red);
             }
             ofDrawLine(0,0+curDisplay*yOffset,50,0+curDisplay*yOffset);
             
-            //get Trigger val
+            //TriggerVal 2 = triggered, 1 = maybe triggered, 0 = not triggered
             if(curGateVal.y == 2.0f){
                 ofSetColor(ofColor::green);
             }else if(curGateVal.y == 1.0f){

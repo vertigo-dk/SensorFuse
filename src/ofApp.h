@@ -53,21 +53,16 @@ public:
     //list of artnetAddress - todo: load off xml file?
     //need to be ordered asc
     vector<string>  artnetAddrs{"000", "016", "032"};
-    
-    
+        
     //const int lastArtNetAddr = 32;
     //Using arrays, since faster, easy to reference and number of gates is static.
-    //Sensor sensors[LASTARTNETADDR];
-    //GateSF gates[LASTARTNETADDR];
-    //Sensor sensors[32];
-    //GateSF gates[32];
+
     
     //last artnet address  + 1
-    std::array<GateSF, 33> gates;
+    std::array<GateSF,33> gates;
     std::array<Sensor,33> sensors;
     
     //display history of setting for debuging debouncing
-    
     //x = sensorValue, y = triggerConfidence
     vector<ofVec2f> gateDisplay;
     Sensor testSensor;

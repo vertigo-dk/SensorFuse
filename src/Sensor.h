@@ -13,8 +13,9 @@
 //bigger numbers for now for testing
 #define DEBOUNCEENV 100
 #define DEBOUNCELEGS 200
-#define DEBOUNCESTAY 700
+//#define DEBOUNCESTAY 700
 
+#define DEBUG 0
 
 class Sensor{
 public:
@@ -48,9 +49,18 @@ public:
     
     //values and timestamps vectors ordered by most recent first
     void add(int value , long time){
-        values.insert(values.begin(), value);
-        timestamps.insert(timestamps.begin(), time);
+
         
+        //only add on a rising or falling edge... i.e ignore timestamp if values match
+        if(values.size() > 0){
+            if(values[0] == value){
+                //acutally, do nothing, we might want to change this logic, only applies to keyboard input presumably.
+                //timestamps[0] = time;
+            }else{
+                values.insert(values.begin(), value);
+                timestamps.insert(timestamps.begin(), time);
+            }
+        }
         //cout << "added:" << value << "@" << time <<"\n";
         //        currentValue = value;
         
@@ -59,6 +69,7 @@ public:
             values.resize(4);
             timestamps.resize(4);
         }
+        
         
     }
     
@@ -92,6 +103,7 @@ public:
     
     int isTriggered(){
         
+        
         //only do the comparison if we have more than three values
         if(values.size() > 3 && timestamps.size() > 3){
             
@@ -101,6 +113,7 @@ public:
             if( values[0] == 0){
                 //user standing still in gate
                 if(curTime - timestamps[0] > DEBOUNCELEGS){
+                    if(DEBUG) cout << "trigger: standing at gate\n";
                     return 2;
                 }
                 //might be mid leg break or env
@@ -116,14 +129,16 @@ public:
                         return 0;
                     }
                 }
-                //beam unbroken
+            //beam unbroken
             }else if(values[0] == 1){
-                //do we have to check next values or can we presume alternating 0s and 1s?
-                if(curTime - timestamps[0] < DEBOUNCESTAY){
-                    return 2;
-                }else{
-                    //not sure...
+                //check if legs happened, like a normal rise and fall
+                if(curTime - timestamps[0] < DEBOUNCELEGS){
+                    if(DEBUG) cout << "trigger: debouncyLegs\n";
                     return 1;
+                }else{
+                    //resting state
+                    if(DEBUG) cout << "trigger: gone\n";
+                    return 0;
                 }
             }else{
                 cout << "invalid sensor value";  //shouldn't happen.
