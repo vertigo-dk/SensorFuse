@@ -11,41 +11,60 @@
 
 //thresholds in millisecs
 //bigger numbers for now for testing
-#define DEBOUNCEENV 30
-#define DEBOUNCELEGS 80
-#define DEBOUNCESTAY 100
+#define DEBOUNCEENV 100
+#define DEBOUNCELEGS 200
+#define DEBOUNCESTAY 700
 
 
 class Sensor{
 public:
     //CONSTUCTORS
     Sensor(){ //empty constructor for array init
+        values.push_back(0);
+        timestamps.push_back(0);
+        add(1,1);
+        add(0,2);
     }
     
     Sensor(string address){
         this->artNetAddress = address;
+        //initial dummy values
+        values.push_back(0);
+        timestamps.push_back(0);
+        add(1,1);
+        add(0,2);
     }
     
     //MEMEBERS
     string artNetAddress;
     
-    //For now, pair both vectors by index.
+    //Most recent first
+    vector<int> values; //0=beam broken, 1=beam unbroken
     vector<long> timestamps; //in millisec
-    vector<int> values; //0=false, 1=true
-    int currentValue; //current state of the laser, should be the same as values.last()
+    //    int currentValue; //current state of the laser, should be the same as values.last()
     
     
     //FUNCTIONS
-    void add(long time, int value){
-        timestamps.push_back(time);
-        values.push_back(value);
+    
+    //values and timestamps vectors ordered by most recent first
+    void add(int value , long time){
+        values.insert(values.begin(), value);
+        timestamps.insert(timestamps.begin(), time);
+        
         //cout << "added:" << value << "@" << time <<"\n";
-        currentValue = value;
+        //        currentValue = value;
+        
+        if(values.size() > 4 && timestamps.size() > 4){
+            //we keep the last 4 values, delete the rest.
+            values.resize(4);
+            timestamps.resize(4);
+        }
+        
     }
     
     string toString(){
-        vector<long>::iterator itTime = timestamps.begin();
         vector<int>::iterator itVal = values.begin();
+        vector<long>::iterator itTime = timestamps.begin();
         
         string str = "{";
         for( ; itTime != timestamps.end() ; ++itTime){
@@ -55,86 +74,84 @@ public:
             str += ofToString(*itTime);
             str += " , ";
         }
-        str += "}/n";
+        str += "}\n";
         return str;
     }
     
+    int currentValue(){
+        return values[0];
+    }
     
-
+    
+    
     //inspect timestamps and values with debounce thresholds and return true if a person is in a gate.
-    //also do cleanup on the fly to keep things efficent?
     
-    bool isTriggered(){
-        //starting from the end of the vector, get the next two values
-        vector<long>::reverse_iterator ritTime = timestamps.rbegin();
-        vector<long>::reverse_iterator ritTimeNext = timestamps.rbegin();
-        ++ritTimeNext;
-        vector<long>::reverse_iterator ritTimeNextNext = timestamps.rbegin();
-        ++ritTimeNextNext;
-        if(ritTimeNextNext != timestamps.rend()){
-            ++ritTimeNextNext;
-        }else{
-            //should catch when we have less than three values
-            return false;
-        }
-        
+    // four cases. three results. two thresholds.
+    //
+    // return 0 = not triggered, 1 = maybe/mid triggered, 2 = triggered
     
-        vector<int>::reverse_iterator ritValue = values.rbegin();
-        vector<int>::reverse_iterator ritValueNext = values.rbegin();
-        ++ritValueNext;
-        vector<int>::reverse_iterator ritValueNextNext = values.rbegin();
-        ++ritValueNextNext;
-        if(ritValueNextNext != values.rend()) ++ritValueNextNext;
+    int isTriggered(){
         
         //only do the comparison if we have more than three values
-        
-        
-        
-        //this for loop is more for clean up than anything else...
-        //for (; ritValueNextNext != values.rend(); ++ritValueNextNext){
-        if(ritValue != values.rend() && ritValueNext != values.rend()){
+        if(values.size() > 3 && timestamps.size() > 3){
             
             double curTime = ofGetElapsedTimeMillis();
             
-            if( *ritValue == 0){
+            //beam broken
+            if( values[0] == 0){
                 //user standing still in gate
-                if(curTime - *ritTime > DEBOUNCESTAY){
-                    return true;
+                if(curTime - timestamps[0] > DEBOUNCELEGS){
+                    return 2;
                 }
-                //might be mid debounce
-                if(curTime - *ritTime < DEBOUNCEENV){
-                    if(*ritTime - *ritTimeNext < DEBOUNCEENV){
-                        //very env debouncy
-                        return false;
+                //might be mid leg break or env
+                if(curTime - timestamps[0] < DEBOUNCELEGS){
+                    //looks like a leg
+                    if(timestamps[0] - timestamps[1] > DEBOUNCELEGS){
+                        return 1;
+                        //looks like env
+                    }else if(timestamps[0] - timestamps[1] > DEBOUNCEENV){
+                        return 0;
+                        //mabye ignore?
                     }else{
-                        //not sure, return true for completion / stop flickering
-                        return true;
+                        return 0;
                     }
                 }
-            }else if(*ritValue == 1){
+                //beam unbroken
+            }else if(values[0] == 1){
                 //do we have to check next values or can we presume alternating 0s and 1s?
-                if(curTime - *ritTime < DEBOUNCESTAY){
-                    return true;
+                if(curTime - timestamps[0] < DEBOUNCESTAY){
+                    return 2;
                 }else{
                     //not sure...
-                    return false;
+                    return 1;
                 }
-                
-                
             }else{
-                //shouldn't happen.
-                cout << "invalid sensor value";
+                cout << "invalid sensor value";  //shouldn't happen.
                 abort();
             }
             
-            
+        }//end timestamps.size() > 2
+        else{
+            return 0; //not triggered
         }
     }
     
-    bool isEmpty(){
+    bool isNoAddr(){
         return (artNetAddress == "");
     }
     
+    bool isNoSense(){
+        return (values.empty());
+    }
+    
+    //
+    bool triggerLogic(){
+        
+    }
+
+    
 };
+
+
 
 #endif /* Sensor_h */
