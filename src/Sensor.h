@@ -11,11 +11,16 @@
 
 //thresholds in millisecs
 //bigger numbers for now for testing
-#define DEBOUNCEENV 100
-#define DEBOUNCELEGS 200
-//#define DEBOUNCESTAY 700
+#define DEBOUNCELOWER 100
+#define DEBOUNCEUPPER 200
 
 #define DEBUG 0
+
+#define TRIGGER_NO 0
+#define TRIGGER_MAYBE 1
+#define TRIGGER_YES 2
+#define UNBROKEN 1
+#define BROKEN 0
 
 class Sensor{
 public:
@@ -53,8 +58,9 @@ public:
         if(values.size() > 0){
             if(values[0] == value){
                 //i.e ignore timestamp if values match
+                //only possible from keyboard input presumably.
+                //otherwise, update timestamps, but this will re-trigger
                 //timestamps[0] = time;
-                //do nothing, we might want to change this logic, only applies to keyboard input presumably.
             }else{
                 values.insert(values.begin(), value);
                 timestamps.insert(timestamps.begin(), time);
@@ -99,36 +105,41 @@ public:
             
             double curTime = ofGetElapsedTimeMillis();
             
-            //beam broken
-            if( values[0] == 0){
-                //user standing still in gate
-                if(curTime - timestamps[0] > DEBOUNCELEGS){
-                    if(DEBUG) cout << "trigger: standing at gate\n";
-                    return 2;
-                }
-                //might be mid leg break or env
-                if(curTime - timestamps[0] < DEBOUNCELEGS){
-                    //looks like a leg
-                    if(timestamps[0] - timestamps[1] > DEBOUNCELEGS){
-                        return 1;
-                        //looks like env
-                    }else if(timestamps[0] - timestamps[1] > DEBOUNCEENV){
-                        return 0;
-                        //mabye ignore?
+            //beam unbroken
+            if(values[0] == UNBROKEN){
+                //environment debounce
+                if(curTime - timestamps[0] < DEBOUNCEUPPER){
+                    //check for env
+                    if(timestamps[0]-timestamps[1] < DEBOUNCELOWER){
+                        //definitely ENV debounce
+                        return TRIGGER_NO;
                     }else{
-                        return 0;
+                        return TRIGGER_MAYBE; //or last known
                     }
                 }
-            //beam unbroken
-            }else if(values[0] == 1){
-                //check if legs happened, like a normal rise and fall
-                if(curTime - timestamps[0] < DEBOUNCELEGS){
-                    if(DEBUG) cout << "trigger: debouncyLegs\n";
-                    return 1;
-                }else{
-                    //resting state
-                    if(DEBUG) cout << "trigger: gone\n";
-                    return 0;
+
+                //beam uninteruppted
+                if(curTime - timestamps[0] > DEBOUNCEUPPER){
+                    return TRIGGER_NO;
+                }
+            }
+            //beam broken
+            else if(values[0] == BROKEN){
+                //might be mid leg break or env
+                if(curTime - timestamps[0] < DEBOUNCEUPPER){
+                    //looks like ENV
+                    if(curTime - timestamps[0] < DEBOUNCELOWER){
+                       return TRIGGER_NO;
+                    }else{
+                        //might be a leg
+                        return TRIGGER_MAYBE;
+                    }
+                }
+                
+                //user standing still in gate
+                if(curTime - timestamps[0] > DEBOUNCEUPPER){
+                    if(DEBUG) cout << "trigger: standing at gate\n";
+                    return TRIGGER_YES;
                 }
             }else{
                 cout << "invalid sensor value";  //shouldn't happen.

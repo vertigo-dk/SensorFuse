@@ -92,17 +92,42 @@ void ofApp::draw(){
     
     string buf;
     buf = "listening for osc messages on port" + ofToString( PORT ) + "\n";
-    buf += "press and release A to send osc message [/BeamBreak/016 0-1]\n";
-    buf += "press D to send osc message [/BeamBreak/016 0]\n";
-    buf += "press F to send osc message [/BeamBreak/016 1]\n";
+    buf += "press and release A to break/unbreak, send osc message [/BeamBreak/016 0-1]\n";
+    buf += "press D to break: send osc message [/BeamBreak/016 0]\n";
+    buf += "press F to unbreak: send osc message [/BeamBreak/016 1]\n";
     ofDrawBitmapString( buf, 10, 20 );
     //    ofDrawBitmapString( "press A to send osc message [/BeamBreak/016 0-1]", 10, 80 );
-    
     
     for ( int i=0; i<NUM_MSG_STRINGS; i++ ){
         ofDrawBitmapString( msg_strings[i], 10, 90+15*i );
     }
+
+    string str;
     
+    //key for values
+    ofPushMatrix();
+    ofTranslate(300, 100);
+    str = "BROKEN = 0";
+    ofSetColor(ofColor::green);
+    ofDrawBitmapString( str, 0, 0 );
+    str = "UNBROKEN = 1";
+    ofSetColor(ofColor::red);
+    ofDrawBitmapString( str, 0, 10 );
+    ofPopMatrix();
+    
+    //key for triggers
+    ofPushMatrix();
+    ofTranslate(500, 100);
+    str = "YES = 2";
+    ofSetColor(ofColor::green);
+    ofDrawBitmapString( str, 0, 0 );
+    str = "MAYBE = 1";
+    ofSetColor(ofColor::yellow);
+    ofDrawBitmapString( str, 0, 10 );
+    str = "NO = 0";
+    ofSetColor(ofColor::red);
+    ofDrawBitmapString( str, 0, 20 );
+    ofPopMatrix();
     
     //get test sensor
     testSensor = sensors[16];
