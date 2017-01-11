@@ -53,7 +53,7 @@ public:
     //list of artnetAddress - todo: load off xml file?
     //need to be ordered asc
     vector<string>  artnetAddrs{"000", "016", "032"};
-        
+    
     //const int lastArtNetAddr = 32;
     //Using arrays, since faster, easy to reference and number of gates is static.
 

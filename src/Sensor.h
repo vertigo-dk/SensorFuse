@@ -26,19 +26,19 @@ class Sensor{
 public:
     //CONSTUCTORS
     Sensor(){ //empty constructor for array init
-        values.push_back(0);
+        values.push_back(1);
         timestamps.push_back(0);
-        add(1,1);
-        add(0,2);
+        add(0,1);
+        add(1,2);
     }
     
     Sensor(string address){
         this->artNetAddress = address;
         //initial dummy values
-        values.push_back(0);
+        values.push_back(1);
         timestamps.push_back(0);
-        add(1,1);
-        add(0,2);
+        add(0,1);
+        add(1,2);
     }
     
     //MEMEBERS
@@ -52,9 +52,8 @@ public:
     //FUNCTIONS
     
     //values and timestamps vectors ordered by most recent first
+    //only add on a rising or falling edge...
     void add(int value , long time){
-
-        //only add on a rising or falling edge...
         if(values.size() > 0){
             if(values[0] == value){
                 //i.e ignore timestamp if values match
@@ -65,6 +64,9 @@ public:
                 values.insert(values.begin(), value);
                 timestamps.insert(timestamps.begin(), time);
             }
+        }else{
+            cout << "need to set initial dummy sensor value";
+            abort();
         }
         if(values.size() > 4 && timestamps.size() > 4){
             //we keep the last 4 values, delete the rest.
@@ -97,29 +99,33 @@ public:
     //
     // return 0 = not triggered, 1 = maybe/mid triggered, 2 = triggered
     
-    int isTriggered(){
+    int getTrigger(){
         
         
         //only do the comparison if we have more than three values
-        if(values.size() > 3 && timestamps.size() > 3){
+        if(values.size() >= 4 && timestamps.size() >= 4){
             
             double curTime = ofGetElapsedTimeMillis();
             
             //beam unbroken
             if(values[0] == UNBROKEN){
-                //environment debounce
+                //environment and leg debounce
                 if(curTime - timestamps[0] < DEBOUNCEUPPER){
                     //check for env
                     if(timestamps[0]-timestamps[1] < DEBOUNCELOWER){
                         //definitely ENV debounce
                         return TRIGGER_NO;
                     }else{
-                        return TRIGGER_MAYBE; //or last known
+                        
+                        if(timestamps[1] - timestamps[2] < DEBOUNCEUPPER &&
+                           timestamps[2] - timestamps[3] < DEBOUNCEUPPER){
+                            return TRIGGER_YES;
+                        }else{
+                            return TRIGGER_MAYBE; //or last known
+                        }
                     }
                 }
-
-                //beam uninteruppted
-                if(curTime - timestamps[0] > DEBOUNCEUPPER){
+                else{ //curTime - timestamps[0] > DEBOUNCEUPPER)
                     return TRIGGER_NO;
                 }
             }

@@ -31,6 +31,7 @@ void ofApp::setup(){
     
     gateDisplay.resize(NUM_GATE_DISPLAY);
     
+    
 }
 
 //--------------------------------------------------------------
@@ -139,7 +140,7 @@ void ofApp::draw(){
         //bool refresh = (ofGetElapsedTimeMillis() % 500 == 0);
 
         float curVal = testSensor.getCurrentValue();
-        float trigVal = testSensor.isTriggered();
+        float trigVal = testSensor.getTrigger();
         //cout << "curVal:" << curVal << " trigval:" << trigVal << "\n";
         
         gateDisplay.insert( gateDisplay.begin(), ofVec2f(curVal , trigVal) );
