@@ -2,7 +2,6 @@
 
 #include "ofMain.h"
 #include "ofxOsc.h"
-#include "Sensor.h"
 #include "GateSF.h"
 
 #define PORT 49161
@@ -60,7 +59,6 @@ public:
     
     //last artnet address  + 1
     std::array<GateSF,33> gates;
-    std::array<Sensor,33> sensors;
     
     //display history of setting for debuging debouncing
     //x = sensorValue, y = triggerConfidence

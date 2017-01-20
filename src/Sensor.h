@@ -166,14 +166,10 @@ public:
         return (values.empty());
     }
     
-    
     int getCurrentValue(){
         return values[0];
     }
-    
 
-
-    
 };
 
 

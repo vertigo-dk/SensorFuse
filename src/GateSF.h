@@ -26,26 +26,10 @@ public:
     GateSF(){
     }
     
-    //passed a sensor by reference, make the gate wrapper around it
-    GateSF(Sensor sen){
-        this->sensor = sen;
-    }
-    
     GateSF(string address){
         this->artnetAddress = address;
+        sensor = Sensor(address);
     }
-
-    GateSF(string address, ofVec3d geo){
-        this->artnetAddress = address;
-        this->geolocation = geo;
-    }
-
-    GateSF(string address, Sensor sen, ofVec3d geo){
-        this->artnetAddress = address;
-        this->sensor = sen;
-        this->geolocation = geo;
-    }
-
     
     //MEMBERS
     string artnetAddress;
@@ -66,8 +50,7 @@ public:
     void update(){
         triggerVal = sensor.getTrigger();
     }
-
-    
+        
 };
 
 #endif /* GateSF_h */

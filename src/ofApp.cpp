@@ -25,7 +25,7 @@ void ofApp::setup(){
     
     //init Sensor objects in the artnetAddrs list with artnet name
     for(auto addressName : artnetAddrs){
-        sensors[ofToInt(addressName)] = Sensor(addressName);
+//        sensors[ofToInt(addressName)] = Sensor(addressName);
         gates[ofToInt(addressName)] = GateSF(addressName);
     }
     
@@ -63,11 +63,11 @@ void ofApp::update(){
             long timeTriggered = ofGetElapsedTimeMillis();
 
             //add trigger value and timestamp to sensor@artnetAddr
-            sensors[artnet].add(value,timeTriggered);
+            gates[artnet].sensor.add(value,timeTriggered);
             
             if(DEBUG){
                 string tempstr = "obj:";
-                tempstr += sensors[artnet].toString();
+                tempstr += gates[artnet].sensor.toString();
                 cout << tempstr << "\n";
                 
             }
@@ -131,7 +131,7 @@ void ofApp::draw(){
     ofPopMatrix();
     
     //get test sensor
-    testSensor = sensors[16];
+    testSensor = gates[16].sensor;
     
     //populate gateDisplay to show gate display over time
     if(!testSensor.isNoSense() ){
