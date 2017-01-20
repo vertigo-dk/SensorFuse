@@ -5,7 +5,6 @@
 //
 // Models the interactive state of Gates and Sensors and attempts to interperate where Users are, and return that as OSC GPS co-ordinates
 
-
 #include "ofApp.h"
 
 //--------------------------------------------------------------
@@ -28,7 +27,6 @@ void ofApp::setup(){
     }
     
     gateDisplay.resize(NUM_GATE_DISPLAY);
-    
 }
 
 //--------------------------------------------------------------
@@ -152,9 +150,6 @@ void ofApp::draw(){
     ofSetLineWidth(4);
     int curDisplay = 0;
     int yOffset = 5;
-    
-    //cout << "gateDisplay size:" << gateDisplay.size() << "\n";
-    
     
     if(gateDisplay.size() != 0 && curDisplay < NUM_GATE_DISPLAY){
         
