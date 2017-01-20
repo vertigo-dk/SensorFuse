@@ -25,12 +25,10 @@ void ofApp::setup(){
     
     //init Sensor objects in the artnetAddrs list with artnet name
     for(auto addressName : artnetAddrs){
-//        sensors[ofToInt(addressName)] = Sensor(addressName);
         gates[ofToInt(addressName)] = GateSF(addressName);
     }
     
     gateDisplay.resize(NUM_GATE_DISPLAY);
-    
     
 }
 
@@ -230,14 +228,6 @@ void ofApp::keyReleased(int key){
     }
     
 }
-
-//todo
-//--------------------------------------------------------------
-void ofApp::drawSensor(Sensor sensor){
-    
-    
-}
-
 
 //--------------------------------------------------------------
 void ofApp::mouseMoved(int x, int y ){

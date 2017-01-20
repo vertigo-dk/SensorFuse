@@ -11,7 +11,6 @@
 #define GateSF_h
 
 #include "Sensor.h"
-#include "ofVec3d.h"
 
 #define TRIGGER_NO 0
 #define TRIGGER_MAYBE 1
@@ -21,9 +20,9 @@
 class GateSF{
     
 public:
-    
     //CONSTRUCTORS
     GateSF(){
+        
     }
     
     GateSF(string address){
@@ -31,26 +30,18 @@ public:
         sensor = Sensor(address);
     }
     
+    void update(){
+        triggerVal = sensor.getTrigger();
+    }
+    
     //MEMBERS
     string artnetAddress;
-    ofVec3d geolocation; //can be empty
     int GateID; //not sure if needed... matches the index of container.
     
     Sensor sensor; //laser sensor on the gate.
     
     //Current Trigger Value
-    int triggerVal;
-    
-    
-    //METHODS
-    void setSensor(Sensor sen){
-        this->sensor = sen;
-    }
-    
-    void update(){
-        triggerVal = sensor.getTrigger();
-    }
-        
+    int triggerVal = 0;
 };
 
 #endif /* GateSF_h */

@@ -33,9 +33,6 @@ public:
     void gotMessage(ofMessage msg);
     ofTrueTypeFont		font;
     
-    //todo:
-    void drawSensor(Sensor sensor);
-    
     //amount of time until message fades
     float fadeTime;
     
