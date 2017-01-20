@@ -1,4 +1,6 @@
 ofxGeo
 ofxGui
+ofxMSACore
+ofxMSAPhysics
 ofxOsc
 ofxVectorGraphics

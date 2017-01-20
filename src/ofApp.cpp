@@ -22,8 +22,27 @@ void ofApp::setup(){
     fadeTime = 20.0f;
     
     //init Sensor objects in the artnetAddrs list with artnet name
-    for(auto addressName : artnetAddrs){
-        gates[ofToInt(addressName)] = GateSF(addressName);
+    for(int i = 0; i < 40; i++){
+        // Create gate
+        ofVec2f position = ofVec2f((20.0)+20, ofGetHeight()-100);
+        gates[i] = GateSF(ofToString(i),position,&users,&world, &timingThreshold);
+        gates[i].index = i;
+    }
+    
+    // Add pointers to neighbours
+    for(int i = 0; i < gates.size(); i++){
+        std::vector<GateSF*> neighbours;
+        // special cases for outer gates:
+        if(i == 0){
+            neighbours.push_back(&gates.at(1));
+        }else if(i == gates.size()-1){
+            neighbours.push_back(&gates.at(gates.size()-2));
+        }else{
+            // TWO NEIGHBOURS
+            neighbours.push_back(&gates.at(i-1));
+            neighbours.push_back(&gates.at(i+1));
+        }
+        gates.at(i).addNeighbours(neighbours);
     }
     
     gateDisplay.resize(NUM_GATE_DISPLAY);
@@ -31,13 +50,11 @@ void ofApp::setup(){
 
 //--------------------------------------------------------------
 void ofApp::update(){
- 
     //Cleanup/Hide old display strings
     for ( int i=0; i<NUM_MSG_STRINGS; i++ ){
         if ( timers[i] < ofGetElapsedTimef() - fadeTime )
             msg_strings[i] = "";
     }
-
     
     //PARSE OSC
     while( receiver.hasWaitingMessages() ){

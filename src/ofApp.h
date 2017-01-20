@@ -2,7 +2,9 @@
 
 #include "ofMain.h"
 #include "ofxOsc.h"
+#include "ofxGUI.h"
 #include "GateSF.h"
+#include "MsaPhysics2D.h"
 
 #define PORT 49161
 #define NUM_MSG_STRINGS 30
@@ -62,6 +64,14 @@ public:
     //x = sensorValue, y = triggerConfidence
     vector<ofVec2f> gateDisplay;
     Sensor testSensor;
+    
+    // Stuff from positionEstimator
+    World2D_ptr world;
+    vector<User> users;
+    
+    // GUI
+    ofxPanel gui;
+    ofParameter<float> timingThreshold;
     
     
     

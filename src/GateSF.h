@@ -11,6 +11,7 @@
 #define GateSF_h
 
 #include "Sensor.h"
+#include "User.h"
 
 #define TRIGGER_NO 0
 #define TRIGGER_MAYBE 1
@@ -25,10 +26,19 @@ public:
         
     }
     
-    GateSF(string address){
+    GateSF(string address, ofVec2f position, vector<User>* users, World2D_ptr* world, ofParameter<float>* timingThreshold){
         this->artnetAddress = address;
         sensor = Sensor(address);
+        this->position = position;
+        this->users = users;
+        this->world = world;
+        this->timingThreshold = timingThreshold;
     }
+    
+    void addNeighbours(std::vector<GateSF*> neighbours){
+        this->neighbours = neighbours;
+    }
+    
     
     void update(){
         triggerVal = sensor.getTrigger();
@@ -36,12 +46,21 @@ public:
     
     //MEMBERS
     string artnetAddress;
-    int GateID; //not sure if needed... matches the index of container.
-    
     Sensor sensor; //laser sensor on the gate.
     
-    //Current Trigger Value
-    int triggerVal = 0;
+    int triggerVal = 0;     //Current Trigger Value
+    
+    // Stuff from PositionEstimator
+    vector<GateSF*> neighbours;
+    vector<User>* users;
+    World2D_ptr* world;
+    ofColor color = ofColor::darkGray;
+    float lastActivationTime = 0;
+    ofParameter<float>* timingThreshold;
+    float distanceToNeighbour = 2.0;
+    ofVec2f position;
+    float width = 100;
+    int index = 0;
 };
 
 #endif /* GateSF_h */
