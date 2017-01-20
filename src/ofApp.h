@@ -55,7 +55,8 @@ public:
 
     
     //last artnet address  + 1
-    std::array<GateSF,33> gates;
+//    std::array<GateSF,33> gates;
+    std::map<int,GateSF> gates;
     
     //display history of setting for debuging debouncing
     //x = sensorValue, y = triggerConfidence

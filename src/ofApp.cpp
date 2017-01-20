@@ -10,7 +10,6 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
-    
     // listen on the given port
     cout << "listening for osc messages on port " << PORT << "\n";
     receiver.setup( PORT );
@@ -219,14 +218,12 @@ void ofApp::keyPressed(int key){
 
 //--------------------------------------------------------------
 void ofApp::keyReleased(int key){
-    
     if ( key =='a' || key == 'A' ){
         ofxOscMessage m;
         m.setAddress( "/BeamBreak/016" );
         m.addIntArg( 1 );
         sender.sendMessage( m );
     }
-    
 }
 
 //--------------------------------------------------------------
