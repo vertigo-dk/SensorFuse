@@ -35,7 +35,7 @@ void ofApp::setup(){
     for(int i = 0; i < 40; i++){
         // Create gate
         ofVec2f position = ofVec2f((20.0*i)+20, ofGetHeight()/2);
-        gates[i] = GateSF(ofToString(i),position,&users,&world, &timingThreshold);
+        gates[i] = GateSF(ofToString(i),position,&users,&world, &timingThreshold, &sender);
         gates[i].index = i;
     }
     
@@ -124,6 +124,9 @@ void ofApp::update(){
     
     for(auto& u : users){
         // send user position
+        
+        // Gate position for activated gate should be set in GateSF class.
+
     }
 }
 

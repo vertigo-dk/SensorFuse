@@ -26,13 +26,14 @@ public:
         
     }
     
-    GateSF(string address, ofVec2f position, vector<User>* users, World2D_ptr* world, ofParameter<float>* timingThreshold){
+    GateSF(string address, ofVec2f position, vector<User>* users, World2D_ptr* world, ofParameter<float>* timingThreshold, ofxOscSender* sender){
         this->artnetAddress = address;
         sensor = Sensor(address);
         this->position = position;
         this->users = users;
         this->world = world;
         this->timingThreshold = timingThreshold;
+        this->sender = sender;
     }
     
     void addNeighbours(std::vector<GateSF*> neighbours){
@@ -65,6 +66,9 @@ public:
                 break;
             }
         }
+        
+        // SEND OSC
+        ofxOscMessage m;
     }
     
     bool isActivated(){
@@ -77,6 +81,8 @@ public:
     Sensor sensor; //laser sensor on the gate.
     
     int triggerVal = 0;     //Current Trigger Value
+    
+    ofxOscSender sender;
     
     // Stuff from PositionEstimator
     vector<GateSF*> neighbours;
