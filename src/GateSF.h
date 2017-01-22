@@ -39,13 +39,41 @@ public:
         this->neighbours = neighbours;
     }
     
-    
-    void update(){
-        triggerVal = sensor.getTrigger();
+    void draw(){
+        if(ofGetElapsedTimef() - lastActivationTime < *timingThreshold){
+            color = ofColor::darkRed;
+        }else{
+            color = ofColor::darkGray;
+        }
+        
+        ofSetColor(color);
+        ofSetLineWidth(3);
+        ofDrawLine(position,ofVec2f(position.x,position.y+width));
     }
     
+    void activate(){
+        lastActivationTime = ofGetElapsedTimef();
+                
+        for(auto& n : neighbours){
+            if(n->isActivated()){
+                //create particle and add velociy
+                float velocity =  std::abs(distanceToNeighbour/(n->lastActivationTime - this->lastActivationTime))/100;
+                ofVec2f velocityVector = ofVec2f((this->position.x-n->position.x)*velocity,0);
+                
+                User user = User(world,ofVec2f(this->position.x,this->position.y+width/2),velocityVector);
+                this->users->push_back(user);
+                break;
+            }
+        }
+    }
+    
+    bool isActivated(){
+        return ofGetElapsedTimef() - lastActivationTime < *timingThreshold;
+    }
+    
+
     //MEMBERS
-    string artnetAddress;
+    string artnetAddress = "";
     Sensor sensor; //laser sensor on the gate.
     
     int triggerVal = 0;     //Current Trigger Value

@@ -9,7 +9,7 @@
 #define PORT 49161
 #define NUM_MSG_STRINGS 30
 #define NUM_GATE_DISPLAY 100
-#define DEBUG 1
+#define DEBUG 0
 
 #define SENDHOST "localhost"
 #define SENDPORT 49161
@@ -21,6 +21,8 @@ public:
     void setup();
     void update();
     void draw();
+    
+    void setupGUI();
     
     void keyPressed(int key);
     void keyReleased(int key);
