@@ -13,7 +13,7 @@
   "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
     "CB1CF109CA3A77AF931BD92C92B3F38F4A501645" : "..\/..\/addons\/ofxMSACore",
     "7ED0D15754D9EE08B829B967643A20055B98F6F4" : "..\/..\/addons\/ofxGeo",
-    "520FFB7FEDE997E28E567F5F921C7EB536DEB8B1" : "SensorFuse\/",
+    "520FFB7FEDE997E28E567F5F921C7EB536DEB8B1" : "WAVE_SensorFuse\/",
     "6E35C72F83598061BA884C70E5F0DF607D045CF3" : "..\/..\/addons\/ofxMSAPhysics"
   },
   "DVTSourceControlWorkspaceBlueprintNameKey" : "SensorFuse",

@@ -69,6 +69,9 @@ public:
         
         // SEND OSC
         ofxOscMessage m;
+        m.setAddress("/Gate/");
+        m.addInt32Arg(index);
+        sender->sendMessage(m);
     }
     
     bool isActivated(){
@@ -82,7 +85,7 @@ public:
     
     int triggerVal = 0;     //Current Trigger Value
     
-    ofxOscSender sender;
+    ofxOscSender* sender;
     
     // Stuff from PositionEstimator
     vector<GateSF*> neighbours;

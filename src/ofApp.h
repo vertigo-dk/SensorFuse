@@ -12,7 +12,7 @@
 #define DEBUG 0
 
 #define SENDHOST "localhost"
-#define SENDPORT 49161
+#define SENDPORT 49162
 #define LASTARTNETADDR 32
 
 class ofApp : public ofBaseApp{

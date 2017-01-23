@@ -37,6 +37,8 @@ void ofApp::setup(){
         ofVec2f position = ofVec2f((20.0*i)+20, ofGetHeight()/2);
         gates[i] = GateSF(ofToString(i),position,&users,&world, &timingThreshold, &sender);
         gates[i].index = i;
+        
+        cout << i * 20.0 << endl;
     }
     
     // Add pointers to neighbours
@@ -124,7 +126,12 @@ void ofApp::update(){
     
     for(auto& u : users){
         // send user position
-        
+        ofxOscMessage m;
+        m.setAddress("/User/");
+        float normPos = u.particle->getPosition().x/(gates.size()*20.0);
+        m.addFloatArg(normPos);
+
+        sender.sendMessage(m);
         // Gate position for activated gate should be set in GateSF class.
 
     }
