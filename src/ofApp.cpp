@@ -79,14 +79,14 @@ void ofApp::update(){
     // MSA update for physics simulation
     world->update();
     
-    // Delete dead users
-    vector<User>::iterator it = users.begin();
-    while(it != users.end()) {
-        if((*it).hasTravelledForTooLongNow()) {
-            it = users.erase(it);
-        }
-        else ++it;
-    }
+    // Delete dead users - FIX: base on lifespa
+//    vector<User>::iterator it = users.begin();
+//    while(it != users.end()) {
+//        if((*it).hasTravelledForTooLongNow()) {
+//            it = users.erase(it);
+//        }
+//        else ++it;
+//    }
     
     //PARSE OSC
     while( receiver.hasWaitingMessages() ){
@@ -135,7 +135,7 @@ void ofApp::update(){
         // send user position
         ofxOscMessage m;
         m.setAddress("/User/");
-        float normPos = u.particle->getPosition().x/(gates.size()*20.0);
+        float normPos = u.getPosition().x/(gates.size()*20.0);
         m.addFloatArg(normPos);
         
         sender.sendMessage(m);
@@ -211,6 +211,10 @@ void ofApp::keyReleased(int key){
         m.setAddress( "/BeamBreak/016" );
         m.addIntArg( 1 );
         sender.sendMessage( m );
+    }
+    
+    if(key-48 > 0 && key-48 < gates.size()){
+        gates.at(key-47).activate();
     }
 }
 

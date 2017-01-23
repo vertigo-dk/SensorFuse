@@ -12,6 +12,7 @@
 
 #include "Sensor.h"
 #include "User.h"
+#include <cstdlib>
 
 #define TRIGGER_NO 0
 #define TRIGGER_MAYBE 1
@@ -54,15 +55,13 @@ public:
     
     void activate(){
         lastActivationTime = ofGetElapsedTimef();
-                
+        
         for(auto& n : neighbours){
             if(n->isActivated()){
                 //create particle and add velociy
                 float velocity =  std::abs(distanceToNeighbour/(n->lastActivationTime - this->lastActivationTime))/100;
                 ofVec2f velocityVector = ofVec2f((this->position.x-n->position.x)*velocity,0);
-                
-                User user = User(world,ofVec2f(this->position.x,this->position.y+width/2),velocityVector);
-                this->users->push_back(user);
+                createOrMoveUser(velocityVector);
                 break;
             }
         }
@@ -74,11 +73,39 @@ public:
         sender->sendMessage(m);
     }
     
+    void createOrMoveUser(ofVec2f velocityVector){
+        User* closeUser;
+        bool userClose = false;
+        bool movingRight = velocityVector.x > 0;
+        
+        // check for existing user in this position
+        for(auto& u : *users){
+            int dist = std::abs(this->position.x-u.getPosition().x);
+            if(dist < 8.0){
+                // check for same direction
+                if(movingRight == u.isMovingRight()){
+                    userClose = true;
+                    closeUser = &u; // set local pointer to close user
+                    break; // out of loop
+                }
+            }
+        }
+        
+        if(userClose){
+            // if found: move existing
+            closeUser->addVelocity(velocityVector);
+        }else{
+            // if not: create new
+            User user = User(world,ofVec2f(this->position.x,this->position.y+width/2),velocityVector, ofToString(users->size()));
+            this->users->push_back(user);
+        }
+    }
+    
     bool isActivated(){
         return ofGetElapsedTimef() - lastActivationTime < *timingThreshold;
     }
     
-
+    
     //MEMBERS
     string artnetAddress = "";
     Sensor sensor; //laser sensor on the gate.
