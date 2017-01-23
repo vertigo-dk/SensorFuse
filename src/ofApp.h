@@ -74,7 +74,8 @@ public:
     // GUI
     ofxPanel gui;
     ofParameter<float> timingThreshold;
-    
+    ofParameter<bool> drawGatesToggle;
+    ofParameter<bool> drawUsersToggle;
     
     
     

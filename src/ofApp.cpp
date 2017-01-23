@@ -36,9 +36,7 @@ void ofApp::setup(){
         // Create gate
         ofVec2f position = ofVec2f((20.0*i)+20, ofGetHeight()/2);
         gates[i] = GateSF(ofToString(i),position,&users,&world, &timingThreshold, &sender);
-        gates[i].index = i;
-        
-        cout << i * 20.0 << endl;
+        gates[i].index = i;        
     }
     
     // Add pointers to neighbours
@@ -130,120 +128,29 @@ void ofApp::update(){
         m.setAddress("/User/");
         float normPos = u.particle->getPosition().x/(gates.size()*20.0);
         m.addFloatArg(normPos);
-
+        
         sender.sendMessage(m);
         // Gate position for activated gate should be set in GateSF class.
-
+        
     }
 }
 
 //--------------------------------------------------------------
 void ofApp::draw(){
-    
-    //    ofSetColor(ofColor::white);
-    //
-    //    string buf;
-    //    buf = "listening for osc messages on port" + ofToString( PORT ) + "\n";
-    //    buf += "press and release A to break/unbreak, send osc message [/BeamBreak/016 0-1]\n";
-    //    buf += "press D to break: send osc message [/BeamBreak/016 0]\n";
-    //    buf += "press F to unbreak: send osc message [/BeamBreak/016 1]\n";
-    //    ofDrawBitmapString( buf, 10, 20 );
-    //    //    ofDrawBitmapString( "press A to send osc message [/BeamBreak/016 0-1]", 10, 80 );
-    //
-    //    for ( int i=0; i<NUM_MSG_STRINGS; i++ ){
-    //        ofDrawBitmapString( msg_strings[i], 10, 90+15*i );
-    //    }
-    //
-    //    string str;
-    //
-    //    //key for values
-    //    ofPushMatrix();
-    //    ofTranslate(300, 100);
-    //    str = "BROKEN = 0";
-    //    ofSetColor(ofColor::green);
-    //    ofDrawBitmapString( str, 0, 0 );
-    //    str = "UNBROKEN = 1";
-    //    ofSetColor(ofColor::red);
-    //    ofDrawBitmapString( str, 0, 10 );
-    //    ofPopMatrix();
-    //
-    //    //key for triggers
-    //    ofPushMatrix();
-    //    ofTranslate(500, 100);
-    //    str = "YES = 2";
-    //    ofSetColor(ofColor::green);
-    //    ofDrawBitmapString( str, 0, 0 );
-    //    str = "MAYBE = 1";
-    //    ofSetColor(ofColor::yellow);
-    //    ofDrawBitmapString( str, 0, 10 );
-    //    str = "NO = 0";
-    //    ofSetColor(ofColor::red);
-    //    ofDrawBitmapString( str, 0, 20 );
-    //    ofPopMatrix();
-    //
-    //    //get test sensor
-    //    testSensor = gates[16].sensor;
-    //
-    //    //populate gateDisplay to show gate display over time
-    //    if(!testSensor.isNoSense() ){
-    //
-    //        //change refresh rate?
-    //        //bool refresh = (ofGetElapsedTimeMillis() % 500 == 0);
-    //
-    //        float curVal = testSensor.getCurrentValue();
-    //        float trigVal = testSensor.getTrigger();
-    //        //cout << "curVal:" << curVal << " trigval:" << trigVal << "\n";
-    //
-    //        gateDisplay.insert( gateDisplay.begin(), ofVec2f(curVal , trigVal) );
-    //    }
-    //
-    //    if (gateDisplay.size() > NUM_GATE_DISPLAY){
-    //        gateDisplay.resize(NUM_GATE_DISPLAY);
-    //    }
-    //
-    //    ofPushMatrix();
-    //    ofTranslate(400, 70);
-    //    ofSetLineWidth(4);
-    //    int curDisplay = 0;
-    //    int yOffset = 5;
-    //
-    //    if(gateDisplay.size() != 0 && curDisplay < NUM_GATE_DISPLAY){
-    //
-    //        for(int i = 0 ; i < gateDisplay.size() ; i++){
-    //
-    //            ofVec2f curGateVal = gateDisplay[i];
-    //            //beam is broken = 0,
-    //            if(curGateVal.x == 0.0f){
-    //                ofSetColor(ofColor::green);
-    //            }else{
-    //                ofSetColor(ofColor::red);
-    //            }
-    //            ofDrawLine(0,0+curDisplay*yOffset,50,0+curDisplay*yOffset);
-    //
-    //            //TriggerVal 2 = triggered, 1 = maybe triggered, 0 = not triggered
-    //            if(curGateVal.y == 2.0f){
-    //                ofSetColor(ofColor::green);
-    //            }else if(curGateVal.y == 1.0f){
-    //                ofSetColor(ofColor::yellow);
-    //            }else {
-    //                ofSetColor(ofColor::red);
-    //            }
-    //            ofDrawLine(50,0+curDisplay*yOffset,100,0+curDisplay*yOffset);
-    //            curDisplay++;
-    //        }
-    //    }
-    //    ofPopMatrix();
-    
     ofBackground(ofColor::dimGray);
     ofPushMatrix();
     ofTranslate(0, 0);
     
-    for(auto& g : gates){
-        g.second.draw();
+    if(drawGatesToggle){
+        for(auto& g : gates){
+            g.second.draw();
+        }
     }
     
-    for(auto& u : users){
-        u.draw();
+    if(drawUsersToggle){
+        for(auto& u : users){
+            u.draw();
+        }
     }
     
     ofPopMatrix();
@@ -252,7 +159,7 @@ void ofApp::draw(){
     info+="no. of users:\n";
     info+=ofToString(users.size());
     ofSetColor(ofColor::darkRed);
-    ofDrawBitmapString(info, 10, 25+gui.getHeight());
+    ofDrawBitmapStringHighlight(info, 25+gui.getWidth(), 25);
     
     // GUI
     gui.draw();
@@ -304,6 +211,8 @@ void ofApp::keyReleased(int key){
 void ofApp::setupGUI(){
     gui.setup();
     gui.add(timingThreshold.set("timing threshold", 2.5,0.5,5.0));
+    gui.add(drawGatesToggle.set("draw gates", true));
+    gui.add(drawUsersToggle.set("draw users", true));
 }
 
 //--------------------------------------------------------------
