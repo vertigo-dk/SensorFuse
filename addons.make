@@ -1,5 +1,6 @@
 ofxGeo
 ofxGui
+ofxJSON
 ofxMSACore
 ofxMSAPhysics
 ofxOsc

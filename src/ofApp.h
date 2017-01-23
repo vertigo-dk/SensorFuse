@@ -3,6 +3,7 @@
 #include "ofMain.h"
 #include "ofxOsc.h"
 #include "ofxGUI.h"
+#include "ofxJSON.h"
 #include "GateSF.h"
 #include "MsaPhysics2D.h"
 
@@ -52,7 +53,7 @@ public:
     
     //list of artnetAddress - todo: load off xml file?
     //need to be ordered asc
-    vector<string>  artnetAddrs{"000", "010", "020", "032"};
+    vector<string>  artnetAddrs;
     
     //const int lastArtNetAddr = 32;
     //Using arrays, since faster, easy to reference and number of gates is static.

@@ -2,6 +2,7 @@
 //  SensorFuse
 //
 //  Created by Keith Lim on 3/1/17.
+//  small and reasonable edits by Frederik Juutilainen on several dates in january
 //
 // Models the interactive state of Gates and Sensors and attempts to interperate where Users are, and return that as OSC GPS co-ordinates
 
@@ -29,12 +30,23 @@ void ofApp::setup(){
     //fadetime on the message display
     fadeTime = 20.0f;
     
+    // Artnet
+    ofxJSONElement json;
+    json.open("artnetAddresses.json");
+    
+    for(int i = 0; i < json.size(); i++){
+        artnetAddrs.push_back(json[i].asString());
+    }
+    
+    int i = 0;
+    
     //init Sensor objects in the artnetAddrs list with artnet name
-    for(int i = 0; i < 40; i++){
+    for(auto& address : artnetAddrs){
         // Create gate
         ofVec2f position = ofVec2f((20.0*i)+20, ofGetHeight()/2);
-        gates[i] = GateSF(ofToString(i),position,&users,&world, &timingThreshold, &sender);
-        gates[i].index = i;        
+        gates[i] = GateSF(address,position,&users,&world, &timingThreshold, &sender);
+        gates[i].index = i;
+        i++;
     }
     
     // Add pointers to neighbours
@@ -85,6 +97,7 @@ void ofApp::update(){
         msg_string = m.getAddress(); //expect "/BeamBreak/[artnetaddr] [0-1]"
         msgTokens = ofSplitString(msg_string, "/", true); //ignore (leading) empty token = true
         
+        cout << msg_string << endl;
         
         if(msgTokens[0] == "BeamBreak"){
             
