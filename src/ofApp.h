@@ -52,7 +52,7 @@ public:
     
     //list of artnetAddress - todo: load off xml file?
     //need to be ordered asc
-    vector<string>  artnetAddrs{"000", "016", "032"};
+    vector<string>  artnetAddrs{"000", "010", "020", "032"};
     
     //const int lastArtNetAddr = 32;
     //Using arrays, since faster, easy to reference and number of gates is static.
@@ -73,6 +73,7 @@ public:
     
     // GUI
     ofxPanel gui;
+    bool hideGui = false;
     ofParameter<float> timingThreshold;
     ofParameter<bool> drawGatesToggle;
     ofParameter<bool> drawUsersToggle;

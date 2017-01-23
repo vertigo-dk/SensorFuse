@@ -25,9 +25,7 @@ void ofApp::setup(){
     world->setWorldSize(ofVec2f(0,0), ofVec2f(ofGetWidth(),ofGetHeight()));
     world->enableCollision();
     world->setDrag(1);
-    
-    ofBackground( 30, 30, 130 );
-    
+        
     //fadetime on the message display
     fadeTime = 20.0f;
     
@@ -162,12 +160,16 @@ void ofApp::draw(){
     ofDrawBitmapStringHighlight(info, 25+gui.getWidth(), 25);
     
     // GUI
+    if(!hideGui){
     gui.draw();
-    
+    }
 }
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
+    if(key == 'g' || key == 'G'){
+        hideGui = !hideGui;
+    }
     
     if ( key =='a' || key == 'A' ){
         ofxOscMessage m;
@@ -175,7 +177,6 @@ void ofApp::keyPressed(int key){
         m.addIntArg( 0 );
         sender.sendMessage( m );
     }
-    
     
     if ( key =='d' || key == 'D' ){
         ofxOscMessage m;
@@ -190,12 +191,7 @@ void ofApp::keyPressed(int key){
         m.addIntArg( 1 );
         sender.sendMessage( m );
     }
-    
-    
-    
 }
-
-
 
 //--------------------------------------------------------------
 void ofApp::keyReleased(int key){
@@ -213,6 +209,7 @@ void ofApp::setupGUI(){
     gui.add(timingThreshold.set("timing threshold", 2.5,0.5,5.0));
     gui.add(drawGatesToggle.set("draw gates", true));
     gui.add(drawUsersToggle.set("draw users", true));
+    gui.loadFromFile("settings.xml");
 }
 
 //--------------------------------------------------------------
