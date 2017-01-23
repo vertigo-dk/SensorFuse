@@ -6,5 +6,4 @@ Created by Keith Lim @kidsthesedays. His code has been merged with the logic fro
 * ofxMSAPhysics, ofxMsaCore, ofxGUI
 
 ### TODO:
-* Setup sending of OSC messages.
 * Check ins and outs
