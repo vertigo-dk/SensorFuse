@@ -96,9 +96,7 @@ void ofApp::update(){
         string msg_string;
         msg_string = m.getAddress(); //expect "/BeamBreak/[artnetaddr] [0-1]"
         msgTokens = ofSplitString(msg_string, "/", true); //ignore (leading) empty token = true
-        
-        cout << msg_string << endl;
-        
+                
         if(msgTokens[0] == "BeamBreak"){
             
             //convert artnet string for easy array access
