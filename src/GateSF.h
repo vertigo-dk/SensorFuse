@@ -88,6 +88,12 @@ public:
                 if(movingRight == u.isMovingRight()){
                     userClose = true;
                     closeUser = &u; // set local pointer to close user
+                    if(movingRight){
+                        neighbours.front()->lastActivationTime = -10;
+                    }else{
+                        neighbours.back()->lastActivationTime = -10;
+                    }
+                    
                     break; // out of loop
                 }
             }
@@ -108,7 +114,6 @@ public:
         return ofGetElapsedTimef() - lastActivationTime < *timingThreshold;
     }
     
-    
     //MEMBERS
     string artnetAddress = "";
     Sensor sensor; //laser sensor on the gate.
@@ -122,7 +127,7 @@ public:
     vector<User>* users;
     World2D_ptr* world;
     ofColor color = ofColor::darkGray;
-    float lastActivationTime = 0;
+    float lastActivationTime = -10;
     ofParameter<float>* timingThreshold;
     float distanceToNeighbour = 2.0;
     ofVec2f position;
