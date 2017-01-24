@@ -80,10 +80,10 @@ void ofApp::update(){
     world->update();
     
     // Delete dead users
-    vector<User>::iterator it = users.begin();
-    while(it != users.end()) {
+    vector<User>::iterator it = users.vector.begin();
+    while(it != users.vector.end()) {
         if((*it).hasTravelledForTooLongNow()) {
-            it = users.erase(it);
+            it = users.vector.erase(it);
         }
         else ++it;
     }
@@ -129,7 +129,7 @@ void ofApp::update(){
         msg_strings[current_msg_string] = "";
     }
     
-    for(auto& u : users){
+    for(auto& u : users.vector){
         // send user position
         ofxOscMessage m;
         m.setAddress("/User/");
@@ -152,7 +152,7 @@ void ofApp::draw(){
     }
     
     if(drawUsersToggle){
-        for(auto& u : users){
+        for(auto& u : users.vector){
             u.draw();
         }
     }
@@ -161,7 +161,7 @@ void ofApp::draw(){
     
     std::string info;
     info+="no. of users:\n";
-    info+=ofToString(users.size());
+    info+=ofToString(users.vector.size());
     ofSetColor(ofColor::darkRed);
     ofDrawBitmapStringHighlight(info, 25+gui.getWidth(), 25);
     

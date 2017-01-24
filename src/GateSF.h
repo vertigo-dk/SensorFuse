@@ -13,6 +13,7 @@
 #include "Sensor.h"
 #include "ofMain.h"
 #include "User.h"
+#include "CountingVector.h"
 #include <cstdlib>
 
 #define TRIGGER_NO 0
@@ -29,7 +30,7 @@ public:
         
     }
     
-    GateSF(string address, ofVec2f position, vector<User>* users, World2D_ptr* world, ofParameter<float>* timingThreshold, ofxOscSender* sender){
+    GateSF(string address, ofVec2f position, CountingVector* users, World2D_ptr* world, ofParameter<float>* timingThreshold, ofxOscSender* sender){
         this->artnetAddress = address;
         sensor = Sensor(address);
         this->position = position;
@@ -81,7 +82,7 @@ public:
         bool movingRight = velocityVector.x > 0;
         
         // check for existing user in this position
-        for(auto& u : *users){
+        for(auto& u : users->vector){
             int dist = std::abs(this->position.x-u.getPosition().x);
             if(dist < 12.0){
                 // check for same direction
@@ -104,9 +105,8 @@ public:
             closeUser->addVelocity(velocityVector);
         }else{
             // if not: create new
-            User user = User(world,ofVec2f(this->position.x,this->position.y+width/2),velocityVector, ofToString(userIdCount));
+            User user = User(world,ofVec2f(this->position.x,this->position.y+width/2),velocityVector, ofToString(this->users->getCurrentCount()));
             this->users->push_back(user);
-            userIdCount++;
         }
     }
     
@@ -124,7 +124,7 @@ public:
     
     // Stuff from PositionEstimator
     vector<GateSF*> neighbours;
-    vector<User>* users;
+    CountingVector* users;
     World2D_ptr* world;
     ofColor color = ofColor::darkGray;
     float lastActivationTime = -10;

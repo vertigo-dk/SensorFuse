@@ -6,6 +6,7 @@
 #include "ofxJSON.h"
 #include "GateSF.h"
 #include "MsaPhysics2D.h"
+#include "CountingVector.h"
 
 #define PORT 49161
 #define NUM_MSG_STRINGS 30
@@ -15,6 +16,7 @@
 #define SENDHOST "localhost"
 #define SENDPORT 49162
 #define LASTARTNETADDR 32
+
 
 
 
@@ -72,7 +74,7 @@ public:
     
     // Stuff from positionEstimator
     World2D_ptr world;
-    vector<User> users;
+    CountingVector users;
     
     // GUI
     ofxPanel gui;
