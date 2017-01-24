@@ -176,38 +176,10 @@ void ofApp::keyPressed(int key){
     if(key == 'g' || key == 'G'){
         hideGui = !hideGui;
     }
-    
-    if ( key =='a' || key == 'A' ){
-        ofxOscMessage m;
-        m.setAddress( "/BeamBreak/016" );
-        m.addIntArg( 0 );
-        sender.sendMessage( m );
-    }
-    
-    if ( key =='d' || key == 'D' ){
-        ofxOscMessage m;
-        m.setAddress( "/BeamBreak/016" );
-        m.addIntArg( 0 );
-        sender.sendMessage( m );
-    }
-    
-    if ( key =='f' || key == 'F' ){
-        ofxOscMessage m;
-        m.setAddress( "/BeamBreak/016" );
-        m.addIntArg( 1 );
-        sender.sendMessage( m );
-    }
 }
 
 //--------------------------------------------------------------
 void ofApp::keyReleased(int key){
-    if ( key =='a' || key == 'A' ){
-        ofxOscMessage m;
-        m.setAddress( "/BeamBreak/016" );
-        m.addIntArg( 1 );
-        sender.sendMessage( m );
-    }
-    
     if(key-48 > 0 && key-48 < gates.size()){
         gates.at(key-47).activate();
     }
