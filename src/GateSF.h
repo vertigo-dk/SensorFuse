@@ -11,6 +11,7 @@
 #define GateSF_h
 
 #include "Sensor.h"
+#include "ofMain.h"
 #include "User.h"
 #include <cstdlib>
 
@@ -18,6 +19,7 @@
 #define TRIGGER_MAYBE 1
 #define TRIGGER_YES 2
 
+static int8_t userIdCount = 0;
 
 class GateSF{
     
@@ -81,7 +83,7 @@ public:
         // check for existing user in this position
         for(auto& u : *users){
             int dist = std::abs(this->position.x-u.getPosition().x);
-            if(dist < 8.0){
+            if(dist < 12.0){
                 // check for same direction
                 if(movingRight == u.isMovingRight()){
                     userClose = true;
@@ -96,8 +98,9 @@ public:
             closeUser->addVelocity(velocityVector);
         }else{
             // if not: create new
-            User user = User(world,ofVec2f(this->position.x,this->position.y+width/2),velocityVector, ofToString(users->size()));
+            User user = User(world,ofVec2f(this->position.x,this->position.y+width/2),velocityVector, ofToString(userIdCount));
             this->users->push_back(user);
+            userIdCount++;
         }
     }
     
@@ -126,5 +129,6 @@ public:
     float width = 100;
     int index = 0;
 };
+
 
 #endif /* GateSF_h */

@@ -79,14 +79,14 @@ void ofApp::update(){
     // MSA update for physics simulation
     world->update();
     
-    // Delete dead users - FIX: base on lifespa
-//    vector<User>::iterator it = users.begin();
-//    while(it != users.end()) {
-//        if((*it).hasTravelledForTooLongNow()) {
-//            it = users.erase(it);
-//        }
-//        else ++it;
-//    }
+    // Delete dead users
+    vector<User>::iterator it = users.begin();
+    while(it != users.end()) {
+        if((*it).hasTravelledForTooLongNow()) {
+            it = users.erase(it);
+        }
+        else ++it;
+    }
     
     //PARSE OSC
     while( receiver.hasWaitingMessages() ){
@@ -98,7 +98,6 @@ void ofApp::update(){
         msgTokens = ofSplitString(msg_string, "/", true); //ignore (leading) empty token = true
                 
         if(msgTokens[0] == "BeamBreak"){
-            
             //convert artnet string for easy array access
             int artnet = ofToInt(msgTokens[1]);
             //get value of BeamBreak, 0=false, 1=true
@@ -110,13 +109,12 @@ void ofApp::update(){
                 gates[artnet].activate(); // activate gate
             }
             
-            
             if(DEBUG){
                 string tempstr = "obj:";
                 tempstr += gates[artnet].sensor.toString();
                 cout << tempstr << "\n";
-                
             }
+            
             msg_string += " value=";
             msg_string += ofToString(value);
             msg_string += " time=";
@@ -137,10 +135,7 @@ void ofApp::update(){
         m.setAddress("/User/");
         float normPos = u.getPosition().x/(gates.size()*20.0);
         m.addFloatArg(normPos);
-        
         sender.sendMessage(m);
-        // Gate position for activated gate should be set in GateSF class.
-        
     }
 }
 

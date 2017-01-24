@@ -38,7 +38,7 @@ public:
     }
     
     void addVelocity(ofVec2f vel){
-        this->particle->addVelocity(vel);
+        this->particle->setVelocity(vel);
         activationPosition = this->particle->getPosition();
     }
     
@@ -54,8 +54,6 @@ private:
     ofVec2f activationPosition;
     float maxDist = 30;
     string userId = "ID NOT SET";
-    
 };
-
 
 #endif /* User_h */
