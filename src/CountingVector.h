@@ -12,9 +12,8 @@
 class CountingVector{
 public:
     vector<User> vector;
-    int counter = 0;
     
-    void push_back(User user){
+    void add(User user){
         this->vector.push_back(user);
         counter++;
     }
@@ -25,6 +24,9 @@ public:
         }
         return counter;
     }
+    
+private:
+    int counter = 0;
     
 };
 

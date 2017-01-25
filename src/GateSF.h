@@ -10,8 +10,8 @@
 #ifndef GateSF_h
 #define GateSF_h
 
-#include "Sensor.h"
 #include "ofMain.h"
+#include "Sensor.h"
 #include "User.h"
 #include "CountingVector.h"
 #include <cstdlib>
@@ -22,6 +22,7 @@
 
 static int8_t userIdCount = 0;
 
+
 class GateSF{
     
 public:
@@ -29,6 +30,7 @@ public:
     GateSF(){
         
     }
+    
     
     GateSF(string address, ofVec2f position, CountingVector* users, World2D_ptr* world, ofParameter<float>* timingThreshold, ofxOscSender* sender){
         this->artnetAddress = address;
@@ -84,7 +86,7 @@ public:
         // check for existing user in this position
         for(auto& u : users->vector){
             int dist = std::abs(this->position.x-u.getPosition().x);
-            if(dist < 12.0){
+            if(dist < 16.0){
                 // check for same direction
                 if(movingRight == u.isMovingRight()){
                     userClose = true;
@@ -106,7 +108,7 @@ public:
         }else{
             // if not: create new
             User user = User(world,ofVec2f(this->position.x,this->position.y+width/2),velocityVector, ofToString(this->users->getCurrentCount()));
-            this->users->push_back(user);
+            this->users->add(user);
         }
     }
     
