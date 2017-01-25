@@ -31,13 +31,13 @@ public:
     }
     
     
-    GateSF(string address, ofVec2f position, vector<User>* users, World2D_ptr* world, ofParameter<float>* timingThreshold, ofxOscSender* sender){
+    GateSF(string address, ofVec2f position, vector<User>* users, World2D_ptr* world, ofParameterGroup* parameterGroup, ofxOscSender* sender){
         this->artnetAddress = address;
-        sensor = Sensor(address);
+        sensor = Sensor(address, parameterGroup);
         this->position = position;
         this->users = users;
         this->world = world;
-        this->timingThreshold = timingThreshold;
+        this->timingThreshold = &parameterGroup->get("timingThreshold").cast<float>();
         this->sender = sender;
     }
     
@@ -90,7 +90,6 @@ public:
             m.addInt32Arg(0);
             sender->sendMessage(m);
         }
-        
         oldTrigger = sensor.getTrigger();
     }
     
@@ -102,7 +101,7 @@ public:
         // check for existing user in this position
         for(auto& u : *users){
             int dist = std::abs(this->position.x-u.getPosition().x);
-            if(dist < 16.0){
+            if(dist < 1.6){
                 // check for same direction
                 if(movingRight == u.isMovingRight()){
                     userClose = true;

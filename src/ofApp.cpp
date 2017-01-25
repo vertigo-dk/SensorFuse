@@ -44,7 +44,7 @@ void ofApp::setup(){
     for(auto& address : artnetAddrs){
         // Create gate
         ofVec2f position = ofVec2f((2.0*i)+2.0, 0);
-        gates[i] = GateSF(address,position,&users,&world, &timingThreshold, &sender);
+        gates[i] = GateSF(address,position,&users,&world, &guiParameters, &sender);
         gates[i].index = i;
         i++;
     }
@@ -148,7 +148,7 @@ void ofApp::update(){
 void ofApp::draw(){
     ofBackground(ofColor::dimGray);
     ofPushMatrix();
-    ofTranslate(0, ofGetHeight()/2);
+    ofTranslate(0, gui.getHeight()+25);
     ofScale(10,10);
     
     if(drawGatesToggle){
@@ -202,10 +202,14 @@ void ofApp::keyReleased(int key){
 
 //--------------------------------------------------------------
 void ofApp::setupGUI(){
-    gui.setup();
-    gui.add(timingThreshold.set("timing threshold", 2.5,0.5,5.0));
-    gui.add(drawGatesToggle.set("draw gates", true));
-    gui.add(drawUsersToggle.set("draw users", true));
+    guiParameters.setName("GUI");
+    guiParameters.add(timingThreshold.set("timing threshold (s)", 2.5,0.5,5.0));
+    guiParameters.add(distanceThreshold.set("dist threshold (m)", 1.9,0.5,4.5));
+    guiParameters.add(debounceLower.set("debounce lower (ms)",100,20,400));
+    guiParameters.add(debounceHigher.set("debounce higher (ms)",200,40,700));
+    guiParameters.add(drawGatesToggle.set("draw gates", true));
+    guiParameters.add(drawUsersToggle.set("draw users", true));
+    gui.setup(guiParameters);
     gui.loadFromFile("settings.xml");
 }
 

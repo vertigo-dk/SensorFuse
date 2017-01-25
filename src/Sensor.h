@@ -11,8 +11,6 @@
 
 //thresholds in millisecs
 //bigger numbers for now for testing
-#define DEBOUNCELOWER 100
-#define DEBOUNCEUPPER 200
 
 #define DEBUG 0
 
@@ -32,13 +30,16 @@ public:
         add(1,2);
     }
     
-    Sensor(string address){
+    Sensor(string address, ofParameterGroup* parameterGroup){
         this->artNetAddress = address;
         //initial dummy values
         values.push_back(1);
         timestamps.push_back(0);
         add(0,1);
         add(1,2);
+        this->debounceUpper = &parameterGroup->get("debounce higher (ms)").cast<int>();
+        this->debounceLower = &parameterGroup->get("debounce lower (ms)").cast<int>();
+
     }
     
     //MEMEBERS
@@ -47,6 +48,8 @@ public:
     //Most recent first
     vector<int> values; //0=beam broken, 1=beam unbroken
     vector<long> timestamps; //in millisec
+    ofParameter<int>* debounceUpper;
+    ofParameter<int>* debounceLower;
     
     
     //FUNCTIONS
@@ -108,31 +111,31 @@ public:
             //beam unbroken
             if(values[0] == UNBROKEN){
                 //environment and leg debounce
-                if(curTime - timestamps[0] < DEBOUNCEUPPER){
+                if(curTime - timestamps[0] < *debounceUpper){
                     //check for env
-                    if(timestamps[0]-timestamps[1] < DEBOUNCELOWER){
+                    if(timestamps[0]-timestamps[1] < *debounceLower){
                         //definitely ENV debounce
                         return TRIGGER_NO;
                     }else{
                         
-                        if(timestamps[1] - timestamps[2] < DEBOUNCEUPPER &&
-                           timestamps[2] - timestamps[3] < DEBOUNCEUPPER){
+                        if(timestamps[1] - timestamps[2] < *debounceUpper &&
+                           timestamps[2] - timestamps[3] < *debounceUpper){
                             return TRIGGER_YES;
                         }else{
                             return TRIGGER_MAYBE; //or last known
                         }
                     }
                 }
-                else{ //curTime - timestamps[0] > DEBOUNCEUPPER)
+                else{ //curTime - timestamps[0] > debounceUpper)
                     return TRIGGER_NO;
                 }
             }
             //beam broken
             else if(values[0] == BROKEN){
                 //might be mid leg break or env
-                if(curTime - timestamps[0] < DEBOUNCEUPPER){
+                if(curTime - timestamps[0] < *debounceUpper){
                     //looks like ENV
-                    if(curTime - timestamps[0] < DEBOUNCELOWER){
+                    if(curTime - timestamps[0] < *debounceLower){
                        return TRIGGER_NO;
                     }else{
                         //might be a leg
@@ -141,7 +144,7 @@ public:
                 }
                 
                 //user standing still in gate
-                if(curTime - timestamps[0] > DEBOUNCEUPPER){
+                if(curTime - timestamps[0] > *debounceUpper){
                     if(DEBUG) cout << "trigger: standing at gate\n";
                     return TRIGGER_YES;
                 }

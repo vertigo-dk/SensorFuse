@@ -57,7 +57,6 @@ public:
     
     //const int lastArtNetAddr = 32;
     //Using arrays, since faster, easy to reference and number of gates is static.
-
     
     //last artnet address  + 1
 //    std::array<GateSF,33> gates;
@@ -73,9 +72,13 @@ public:
     vector<User> users;
     
     // GUI
+    ofParameterGroup guiParameters;
     ofxPanel gui;
     bool hideGui = false;
     ofParameter<float> timingThreshold;
+    ofParameter<float> distanceThreshold;
+    ofParameter<int> debounceLower;
+    ofParameter<int> debounceHigher;
     ofParameter<bool> drawGatesToggle;
     ofParameter<bool> drawUsersToggle;
 };

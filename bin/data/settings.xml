@@ -3,4 +3,12 @@
 	<draw_gates>1</draw_gates>
 	<draw_users>1</draw_users>
 <group/>
+<GUI>
+		<timing_threshold__s_>2.5</timing_threshold__s_>
+		<dist_threshold__m_>1.9</dist_threshold__m_>
+		<debounce_lower__ms_>100</debounce_lower__ms_>
+		<debounce_higher__ms_>200</debounce_higher__ms_>
+		<draw_gates>1</draw_gates>
+		<draw_users>1</draw_users>
+	</GUI>
 </group>
