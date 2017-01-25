@@ -51,6 +51,10 @@ public:
         return timeOfBirth-ofGetElapsedTimef();
     }
     
+    float getVelocity(){
+        return particle->getVelocity().x;
+    }
+    
     bool isMovingRight(){
         return particle->getVelocity().x > 0;
     }

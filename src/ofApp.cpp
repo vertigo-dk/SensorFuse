@@ -140,6 +140,7 @@ void ofApp::update(){
         float normPos = u.getPosition().x/(gates.size()*2.0);
         m.addFloatArg(normPos); // normalized position
         m.addFloatArg(u.getLifespan());
+        m.addFloatArg(u.getVelocity());
         sender.sendMessage(m);
     }
 }
