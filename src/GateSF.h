@@ -47,7 +47,7 @@ public:
     }
     
     void draw(){
-        if(ofGetElapsedTimef() - lastActivationTime < *timingThreshold){
+        if(sensor.getTrigger() > 0){
             color = ofColor::darkRed;
         }else{
             color = ofColor::darkGray;
@@ -64,8 +64,10 @@ public:
         for(auto& n : neighbours){
             if(n->isActivated()){
                 //create particle and add velociy
-                float velocity =  std::abs(distanceToNeighbour/(n->lastActivationTime - this->lastActivationTime))/100;
-                ofVec2f velocityVector = ofVec2f((this->position.x-n->position.x)*velocity,0);
+                float velocity =  (distanceToNeighbour/std::abs(n->lastActivationTime - this->lastActivationTime));
+                cout << std::abs(n->lastActivationTime - this->lastActivationTime) << endl;
+
+                ofVec2f velocityVector = ofVec2f((this->position.x-n->position.x),0).normalize() * velocity *1/ofGetFrameRate() ;
                 createOrMoveUser(velocityVector);
                 break;
             }
@@ -76,6 +78,16 @@ public:
         m.setAddress("/Gate/");
         m.addInt32Arg(index);
         sender->sendMessage(m);
+    }
+    
+    int oldTrigger = 0;
+    
+    void update(){
+        // Check value of sensor and activate if necessary
+        if(oldTrigger == 0 && sensor.getTrigger() > 0){
+            activate();
+        }
+        oldTrigger = sensor.getTrigger();
     }
     
     void createOrMoveUser(ofVec2f velocityVector){
@@ -134,7 +146,7 @@ public:
     ofParameter<float>* timingThreshold;
     float distanceToNeighbour = 2.0;
     ofVec2f position;
-    float width = 100;
+    float width = 4.0;
     int index = 0;
 };
 

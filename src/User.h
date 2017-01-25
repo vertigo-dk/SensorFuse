@@ -19,7 +19,7 @@ public:
         this->particle = (*world)->makeParticle();
         this->particle->moveTo(position);
         this->particle->addVelocity(velocity);
-        this->particle->setRadius(3);
+        this->particle->setRadius(0.1);
         this->particle->disableCollision();
         this->activationPosition = position;
         this->userId = userId;
@@ -52,7 +52,7 @@ public:
 private:
     Particle2D_ptr particle;
     ofVec2f activationPosition;
-    float maxDist = 30;
+    float maxDist = 3.0;
     string userId = "ID NOT SET";
 };
 

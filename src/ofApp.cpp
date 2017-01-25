@@ -24,9 +24,9 @@ void ofApp::setup(){
     world = World2D::create();
     world->setGravity(ofVec2f(0,0));
     world->setWorldSize(ofVec2f(0,0), ofVec2f(ofGetWidth(),ofGetHeight()));
-    world->enableCollision();
+    world->disableCollision();
     world->setDrag(1);
-        
+    
     //fadetime on the message display
     fadeTime = 20.0f;
     
@@ -43,7 +43,7 @@ void ofApp::setup(){
     //init Sensor objects in the artnetAddrs list with artnet name
     for(auto& address : artnetAddrs){
         // Create gate
-        ofVec2f position = ofVec2f((20.0*i)+20, ofGetHeight()/2);
+        ofVec2f position = ofVec2f((2.0*i)+2.0, 0);
         gates[i] = GateSF(address,position,&users,&world, &timingThreshold, &sender);
         gates[i].index = i;
         i++;
@@ -96,18 +96,18 @@ void ofApp::update(){
         string msg_string;
         msg_string = m.getAddress(); //expect "/BeamBreak/[artnetaddr] [0-1]"
         msgTokens = ofSplitString(msg_string, "/", true); //ignore (leading) empty token = true
-                
+        
         if(msgTokens[0] == "BeamBreak"){
             //convert artnet string for easy array access
             int artnet = ofToInt(msgTokens[1]);
             //get value of BeamBreak, 0=false, 1=true
             int value = m.getArgAsInt32(0);
-            
+            long timeTriggered = ofGetElapsedTimeMillis();
+
             //add trigger value and timestamp to sensor@artnetAddr
-            //            gates[artnet].sensor.add(value,timeTriggered);
-            if(value == 1){
-                gates[artnet].activate(); // activate gate
-            }
+            gates[artnet].sensor.add(value,timeTriggered);
+            
+            
             
             if(DEBUG){
                 string tempstr = "obj:";
@@ -129,6 +129,10 @@ void ofApp::update(){
         msg_strings[current_msg_string] = "";
     }
     
+    for(auto& g : gates){
+        g.second.update();
+    }
+    
     for(auto& u : users.vector){
         // send user position
         ofxOscMessage m;
@@ -143,7 +147,8 @@ void ofApp::update(){
 void ofApp::draw(){
     ofBackground(ofColor::dimGray);
     ofPushMatrix();
-    ofTranslate(0, 0);
+    ofTranslate(0, ofGetHeight()/2);
+    ofScale(10,10);
     
     if(drawGatesToggle){
         for(auto& g : gates){
@@ -167,7 +172,7 @@ void ofApp::draw(){
     
     // GUI
     if(!hideGui){
-    gui.draw();
+        gui.draw();
     }
 }
 
@@ -176,13 +181,23 @@ void ofApp::keyPressed(int key){
     if(key == 'g' || key == 'G'){
         hideGui = !hideGui;
     }
+    
+    // Activate gate sensors based on key
+    if(key-48 > 0 && key-48 < gates.size()){
+//        long timeTriggered = ofGetElapsedTimeMillis();
+//        gates.at(key-47).sensor.add(0, timeTriggered);
+        gates.at(key-47).activate();
+ 
+    }
 }
 
 //--------------------------------------------------------------
-void ofApp::keyReleased(int key){
-    if(key-48 > 0 && key-48 < gates.size()){
-        gates.at(key-47).activate();
-    }
+void ofApp::keyReleased(int key){    
+    // Deactivate gate sensors based on key
+//    if(key-48 > 0 && key-48 < gates.size()){
+//        long timeTriggered = ofGetElapsedTimeMillis();
+//        gates.at(key-47).sensor.add(1, timeTriggered);
+//    }
 }
 
 //--------------------------------------------------------------

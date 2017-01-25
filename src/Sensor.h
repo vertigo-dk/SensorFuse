@@ -100,8 +100,6 @@ public:
     // return 0 = not triggered, 1 = maybe/mid triggered, 2 = triggered
     
     int getTrigger(){
-        
-        
         //only do the comparison if we have more than three values
         if(values.size() >= 4 && timestamps.size() >= 4){
             
