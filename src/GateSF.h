@@ -92,11 +92,12 @@ public:
                     userClose = true;
                     closeUser = &u; // set local pointer to close user
                     if(movingRight){
+                        // if user is moving right, deactivate gate to left
                         neighbours.front()->lastActivationTime = -10;
                     }else{
+                        // vice-versa
                         neighbours.back()->lastActivationTime = -10;
                     }
-                    
                     break; // out of loop
                 }
             }
@@ -104,7 +105,7 @@ public:
         
         if(userClose){
             // if found: move existing
-            closeUser->addVelocity(velocityVector);
+            closeUser->setVelocity(velocityVector);
         }else{
             // if not: create new
             User user = User(world,ofVec2f(this->position.x,this->position.y+width/2),velocityVector, ofToString(this->users->getCurrentCount()));

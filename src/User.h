@@ -37,7 +37,7 @@ public:
         return activationPosition.distance(this->particle->getPosition()) > maxDist;
     }
     
-    void addVelocity(ofVec2f vel){
+    void setVelocity(ofVec2f vel){
         this->particle->setVelocity(vel);
         activationPosition = this->particle->getPosition();
     }
