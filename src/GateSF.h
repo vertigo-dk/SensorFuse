@@ -13,7 +13,6 @@
 #include "ofMain.h"
 #include "Sensor.h"
 #include "User.h"
-#include "CountingVector.h"
 #include <cstdlib>
 
 #define TRIGGER_NO 0
@@ -32,7 +31,7 @@ public:
     }
     
     
-    GateSF(string address, ofVec2f position, CountingVector* users, World2D_ptr* world, ofParameter<float>* timingThreshold, ofxOscSender* sender){
+    GateSF(string address, ofVec2f position, vector<User>* users, World2D_ptr* world, ofParameter<float>* timingThreshold, ofxOscSender* sender){
         this->artnetAddress = address;
         sensor = Sensor(address);
         this->position = position;
@@ -65,8 +64,6 @@ public:
             if(n->isActivated()){
                 //create particle and add velociy
                 float velocity =  (distanceToNeighbour/std::abs(n->lastActivationTime - this->lastActivationTime));
-                cout << std::abs(n->lastActivationTime - this->lastActivationTime) << endl;
-
                 ofVec2f velocityVector = ofVec2f((this->position.x-n->position.x),0).normalize() * velocity *1/ofGetFrameRate() ;
                 createOrMoveUser(velocityVector);
                 break;
@@ -75,8 +72,8 @@ public:
         
         // SEND OSC
         ofxOscMessage m;
-        m.setAddress("/Gate/");
-        m.addInt32Arg(index);
+        m.setAddress("/Gate/"+ofToString(index));
+        m.addInt32Arg(1);
         sender->sendMessage(m);
     }
     
@@ -86,7 +83,14 @@ public:
         // Check value of sensor and activate if necessary
         if(oldTrigger == 0 && sensor.getTrigger() > 0){
             activate();
+        }else if(oldTrigger == 2 && sensor.getTrigger() == 0){
+            // SEND OSC
+            ofxOscMessage m;
+            m.setAddress("/Gate/"+ofToString(index));
+            m.addInt32Arg(0);
+            sender->sendMessage(m);
         }
+        
         oldTrigger = sensor.getTrigger();
     }
     
@@ -96,7 +100,7 @@ public:
         bool movingRight = velocityVector.x > 0;
         
         // check for existing user in this position
-        for(auto& u : users->vector){
+        for(auto& u : *users){
             int dist = std::abs(this->position.x-u.getPosition().x);
             if(dist < 16.0){
                 // check for same direction
@@ -120,8 +124,30 @@ public:
             closeUser->setVelocity(velocityVector);
         }else{
             // if not: create new
-            User user = User(world,ofVec2f(this->position.x,this->position.y+width/2),velocityVector, ofToString(this->users->getCurrentCount()));
-            this->users->add(user);
+            // find user id
+            
+            int userId = 1;
+            bool newID = false;
+            if(users->size()>0){
+                while(!newID){
+                    bool isOccupied = false;
+                    for(int i = 0; i<users->size(); i++){
+                        if(ofToInt(users->at(i).getId()) == userId){
+                            isOccupied = true;
+                        }
+                        if(!isOccupied){
+                            newID = true;
+                        }else{
+                            userId++;
+                            
+                        }
+                    }
+                }
+            }
+            
+            
+            User user = User(world,ofVec2f(this->position.x,this->position.y+width/2),velocityVector, ofToString(userId));
+            this->users->push_back(user);
         }
     }
     
@@ -139,7 +165,7 @@ public:
     
     // Stuff from PositionEstimator
     vector<GateSF*> neighbours;
-    CountingVector* users;
+    vector<User>* users;
     World2D_ptr* world;
     ofColor color = ofColor::darkGray;
     float lastActivationTime = -10;

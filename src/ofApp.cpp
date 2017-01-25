@@ -80,10 +80,10 @@ void ofApp::update(){
     world->update();
     
     // Delete dead users
-    vector<User>::iterator it = users.vector.begin();
-    while(it != users.vector.end()) {
+    vector<User>::iterator it = users.begin();
+    while(it != users.end()) {
         if((*it).hasTravelledForTooLongNow()) {
-            it = users.vector.erase(it);
+            it = users.erase(it);
         }
         else ++it;
     }
@@ -103,7 +103,7 @@ void ofApp::update(){
             //get value of BeamBreak, 0=false, 1=true
             int value = m.getArgAsInt32(0);
             long timeTriggered = ofGetElapsedTimeMillis();
-
+            
             //add trigger value and timestamp to sensor@artnetAddr
             gates[artnet].sensor.add(value,timeTriggered);
             
@@ -133,11 +133,11 @@ void ofApp::update(){
         g.second.update();
     }
     
-    for(auto& u : users.vector){
+    for(auto& u : users){
         // send user position
         ofxOscMessage m;
-        m.setAddress("/User/");
-        float normPos = u.getPosition().x/(gates.size()*20.0);
+        m.setAddress("/User/"+u.getId());
+        float normPos = u.getPosition().x/(gates.size()*2.0);
         m.addFloatArg(normPos);
         sender.sendMessage(m);
     }
@@ -157,7 +157,7 @@ void ofApp::draw(){
     }
     
     if(drawUsersToggle){
-        for(auto& u : users.vector){
+        for(auto& u : users){
             u.draw();
         }
     }
@@ -166,7 +166,7 @@ void ofApp::draw(){
     
     std::string info;
     info+="no. of users:\n";
-    info+=ofToString(users.vector.size());
+    info+=ofToString(users.size());
     ofSetColor(ofColor::darkRed);
     ofDrawBitmapStringHighlight(info, 25+gui.getWidth(), 25);
     
@@ -184,20 +184,19 @@ void ofApp::keyPressed(int key){
     
     // Activate gate sensors based on key
     if(key-48 > 0 && key-48 < gates.size()){
-//        long timeTriggered = ofGetElapsedTimeMillis();
-//        gates.at(key-47).sensor.add(0, timeTriggered);
-        gates.at(key-47).activate();
- 
+        long timeTriggered = ofGetElapsedTimeMillis();
+        gates.at(key-47).sensor.add(0, timeTriggered);
+        
     }
 }
 
 //--------------------------------------------------------------
-void ofApp::keyReleased(int key){    
+void ofApp::keyReleased(int key){
     // Deactivate gate sensors based on key
-//    if(key-48 > 0 && key-48 < gates.size()){
-//        long timeTriggered = ofGetElapsedTimeMillis();
-//        gates.at(key-47).sensor.add(1, timeTriggered);
-//    }
+    if(key-48 > 0 && key-48 < gates.size()){
+        long timeTriggered = ofGetElapsedTimeMillis();
+        gates.at(key-47).sensor.add(1, timeTriggered);
+    }
 }
 
 //--------------------------------------------------------------

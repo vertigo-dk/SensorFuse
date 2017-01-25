@@ -49,6 +49,8 @@ public:
     bool isMovingRight(){
         return particle->getVelocity().x > 0;
     }
+    
+    string getId(){ return userId; }
 private:
     Particle2D_ptr particle;
     ofVec2f activationPosition;

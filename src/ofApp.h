@@ -6,7 +6,6 @@
 #include "ofxJSON.h"
 #include "GateSF.h"
 #include "MsaPhysics2D.h"
-#include "CountingVector.h"
 
 #define PORT 49161
 #define NUM_MSG_STRINGS 30
@@ -71,7 +70,7 @@ public:
     
     // Stuff from positionEstimator
     World2D_ptr world;
-    CountingVector users;
+    vector<User> users;
     
     // GUI
     ofxPanel gui;
