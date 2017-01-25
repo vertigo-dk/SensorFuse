@@ -138,7 +138,8 @@ void ofApp::update(){
         ofxOscMessage m;
         m.setAddress("/User/"+u.getId());
         float normPos = u.getPosition().x/(gates.size()*2.0);
-        m.addFloatArg(normPos);
+        m.addFloatArg(normPos); // normalized position
+        m.addFloatArg(u.getLifespan());
         sender.sendMessage(m);
     }
 }

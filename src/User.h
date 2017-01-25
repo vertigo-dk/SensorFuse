@@ -23,6 +23,7 @@ public:
         this->particle->disableCollision();
         this->activationPosition = position;
         this->userId = userId;
+        this->timeOfBirth = ofGetElapsedTimef();
     }
     
     void draw(){
@@ -46,6 +47,10 @@ public:
         return this->particle->getPosition();
     }
     
+    float getLifespan(){
+        return timeOfBirth-ofGetElapsedTimef();
+    }
+    
     bool isMovingRight(){
         return particle->getVelocity().x > 0;
     }
@@ -55,6 +60,7 @@ private:
     Particle2D_ptr particle;
     ofVec2f activationPosition;
     float maxDist = 3.0;
+    float timeOfBirth = 0;
     string userId = "ID NOT SET";
 };
 
