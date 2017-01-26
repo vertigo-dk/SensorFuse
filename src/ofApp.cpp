@@ -149,6 +149,15 @@ void ofApp::update(){
         g.second.update();
     }
     
+    for(int i = 0; i < soundObjects.size(); i++){
+        ofxOscMessage m;
+        m.setAddress("/soundObject/" + ofToString(i));
+        ofVec2f pos = soundObjects.at(i).getPosition();
+        m.addFloatArg(pos.x/(80+3));
+        m.addFloatArg((pos.y+3.5)/(4+3));
+        sender.sendMessage(m);
+    }
+    
     for(auto& u : users){
         // send user position
         ofxOscMessage m;
