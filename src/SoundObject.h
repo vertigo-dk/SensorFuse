@@ -39,7 +39,9 @@ public:
     }
     
     void repelOtherSoundObject(SoundObject* repeller){
-        (*world)->makeAttraction(this->particle, repeller->particle, repulsionStrength);
+        Attraction2D_ptr repulsion = (*world)->makeAttraction(this->particle, repeller->particle, repulsionStrength);
+        repulsion->setMaxDistance(maxDistRepulsion);
+        repulsion->setMinDistance(minDistRepulsion);
     }
     
     ofVec2f getPosition(){
@@ -49,10 +51,12 @@ public:
 //private:
     Particle2D_ptr particle;
     float attractionStrength = 0.3;
-    float repulsionStrength = -0.3;
+    float repulsionStrength = -0.005;
     float distThreshold = 30.0;
     float maxDistAttraction = 20.0f;
     float minDistAttraction = 2.0f;
+    float maxDistRepulsion = 2.0f;
+    float minDistRepulsion = 0.5f;
     World2D_ptr* world;
     vector<Attraction2D_ptr> attractions;
     std::string getPositionString(){
