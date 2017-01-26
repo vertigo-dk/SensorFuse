@@ -42,8 +42,8 @@ public:
     Particle2D_ptr particle;
     float attractionStrength = 0.3;
     float distThreshold = 30.0;
-    float maxDistAttraction = 200.0f;
-    float minDistAttraction = 50.0f;
+    float maxDistAttraction = 20.0f;
+    float minDistAttraction = 2.0f;
     World2D_ptr* world;
     vector<Attraction2D_ptr> attractions;
     std::string getPositionString(){

@@ -24,6 +24,12 @@ public:
         this->activationPosition = position;
         this->userId = userId;
         this->timeOfBirth = ofGetElapsedTimef();
+        
+        // Attractor particle for sound objects
+        this->attractorParticle = (*world)->makeParticle();
+        this->attractorParticle->moveTo(particle->getPosition());
+        this->attractorParticle->setRadius(0.1);
+        this->attractorParticle->makeFixed();
     }
     
     void draw(){
@@ -32,6 +38,11 @@ public:
         std::string info;
         info+=ofToString(userId);
         ofDrawBitmapString(info, particle->getPosition());
+    }
+    
+    void update(){
+        // set fixed particle to free particles position
+        attractorParticle->moveTo(particle->getPosition());
     }
     
     bool hasTravelledForTooLongNow(){
@@ -59,13 +70,15 @@ public:
         return particle->getVelocity().x > 0;
     }
     
-    Particle2D_ptr* getParticle_ptr(){
-        return &this->particle;
+    Particle2D_ptr* getAttractionParticle_ptr(){
+        return &this->attractorParticle;
     }
     
     string getId(){ return userId; }
 private:
     Particle2D_ptr particle;
+    Particle2D_ptr attractorParticle;
+
     ofVec2f activationPosition;
     float maxDist = 3.0;
     float timeOfBirth = 0;

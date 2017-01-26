@@ -149,7 +149,7 @@ public:
             
             User user = User(world,ofVec2f(this->position.x,this->position.y+width/2),velocityVector, ofToString(userId));
             for(auto& s : *soundObjects){
-                s.createAttraction(user.getParticle_ptr());
+                s.createAttraction(user.getAttractionParticle_ptr());
             }
             this->users->push_back(user);
         }

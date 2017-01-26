@@ -87,6 +87,7 @@ void ofApp::update(){
     // Delete dead users
     vector<User>::iterator it = users.begin();
     while(it != users.end()) {
+            (*it).update();
         if((*it).hasTravelledForTooLongNow()) {
             it = users.erase(it);
         }
@@ -170,6 +171,7 @@ void ofApp::draw(){
     }
     
     ofNoFill();
+    ofSetColor(ofColor::antiqueWhite);
     ofDrawRectangle(-1.5, -1.5, 80+3.0, 4+3.0); // Draw borders of world;
     
     for(auto& s : soundObjects){
