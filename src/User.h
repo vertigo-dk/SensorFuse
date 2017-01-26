@@ -48,7 +48,7 @@ public:
     }
     
     float getLifespan(){
-        return timeOfBirth-ofGetElapsedTimef();
+        return ofGetElapsedTimef()-timeOfBirth;
     }
     
     float getVelocity(){
@@ -57,6 +57,10 @@ public:
     
     bool isMovingRight(){
         return particle->getVelocity().x > 0;
+    }
+    
+    Particle2D_ptr* getParticle_ptr(){
+        return &this->particle;
     }
     
     string getId(){ return userId; }

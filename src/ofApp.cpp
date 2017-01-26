@@ -23,7 +23,7 @@ void ofApp::setup(){
     // setup world for physics
     world = World2D::create();
     world->setGravity(ofVec2f(0,0));
-    world->setWorldSize(ofVec2f(0,0), ofVec2f(ofGetWidth(),ofGetHeight()));
+    world->setWorldSize(ofVec2f(-1.5,-1.5), ofVec2f(80.0+3.0,4.0+3.0));
     world->disableCollision();
     world->setDrag(1);
     
@@ -44,7 +44,7 @@ void ofApp::setup(){
     for(auto& address : artnetAddrs){
         // Create gate
         ofVec2f position = ofVec2f((2.0*i)+2.0, 0);
-        gates[i] = GateSF(address,position,&users,&world, &guiParameters, &sender);
+        gates[i] = GateSF(address,position,&users,&world, &guiParameters, &sender, &soundObjects);
         gates[i].index = i;
         i++;
     }
@@ -63,6 +63,11 @@ void ofApp::setup(){
             neighbours.push_back(&gates.at(i+1));
         }
         gates.at(i).addNeighbours(neighbours);
+    }
+    
+    for(int i = 0; i < NUMBER_OF_SOUNDOBJECTS; i++){
+        ofVec2f initPos = ofVec2f(ofRandom(0,80), ofRandom(0, 4));
+        soundObjects.push_back(SoundObject(&world, initPos));
     }
     
     gateDisplay.resize(NUM_GATE_DISPLAY);
@@ -162,6 +167,13 @@ void ofApp::draw(){
         for(auto& u : users){
             u.draw();
         }
+    }
+    
+    ofNoFill();
+    ofDrawRectangle(-1.5, -1.5, 80+3.0, 4+3.0); // Draw borders of world;
+    
+    for(auto& s : soundObjects){
+        s.draw();
     }
     
     ofPopMatrix();

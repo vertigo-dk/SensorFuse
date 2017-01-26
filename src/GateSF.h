@@ -12,6 +12,7 @@
 
 #include "ofMain.h"
 #include "Sensor.h"
+#include "SoundObject.h"
 #include "User.h"
 #include <cstdlib>
 
@@ -31,12 +32,13 @@ public:
     }
     
     
-    GateSF(string address, ofVec2f position, vector<User>* users, World2D_ptr* world, ofParameterGroup* parameterGroup, ofxOscSender* sender){
+    GateSF(string address, ofVec2f position, vector<User>* users, World2D_ptr* world, ofParameterGroup* parameterGroup, ofxOscSender* sender, vector<SoundObject>* soundObjects){
         this->artnetAddress = address;
         sensor = Sensor(address, parameterGroup);
         this->position = position;
         this->users = users;
         this->world = world;
+        this->soundObjects = soundObjects;
         this->timingThreshold = &parameterGroup->get("timingThreshold").cast<float>();
         this->sender = sender;
     }
@@ -146,6 +148,9 @@ public:
             
             
             User user = User(world,ofVec2f(this->position.x,this->position.y+width/2),velocityVector, ofToString(userId));
+            for(auto& s : *soundObjects){
+                s.createAttraction(user.getParticle_ptr());
+            }
             this->users->push_back(user);
         }
     }
@@ -166,6 +171,7 @@ public:
     vector<GateSF*> neighbours;
     vector<User>* users;
     World2D_ptr* world;
+    vector<SoundObject>* soundObjects;
     ofColor color = ofColor::darkGray;
     float lastActivationTime = -10;
     ofParameter<float>* timingThreshold;

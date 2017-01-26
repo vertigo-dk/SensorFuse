@@ -5,12 +5,14 @@
 #include "ofxGUI.h"
 #include "ofxJSON.h"
 #include "GateSF.h"
+#include "SoundObject.h"
 #include "MsaPhysics2D.h"
 
 #define PORT 49161
 #define NUM_MSG_STRINGS 30
 #define NUM_GATE_DISPLAY 100
 #define DEBUG 0
+#define NUMBER_OF_SOUNDOBJECTS 5
 
 #define SENDHOST "localhost"
 #define SENDPORT 49162
@@ -66,6 +68,10 @@ public:
     //x = sensorValue, y = triggerConfidence
     vector<ofVec2f> gateDisplay;
     Sensor testSensor;
+
+    // Sound objects moving around
+    vector<SoundObject> soundObjects;
+
     
     // Stuff from positionEstimator
     World2D_ptr world;

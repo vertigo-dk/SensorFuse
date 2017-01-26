@@ -98,7 +98,7 @@
 		2834D88A62CD23F3DE2C47D1 /* ofxButton.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxButton.h; path = ../../../addons/ofxGui/src/ofxButton.h; sourceTree = SOURCE_ROOT; };
 		2ACD183BFDC92283ECCF27DA /* MSAPhysicsSpring.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = MSAPhysicsSpring.h; path = ../../../addons/ofxMSAPhysics/src/MSAPhysicsSpring.h; sourceTree = SOURCE_ROOT; };
 		2C7CF000B7B4F782C187C353 /* json.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = json.h; path = ../../../addons/ofxJSON/libs/jsoncpp/include/json/json.h; sourceTree = SOURCE_ROOT; };
-		2E388C9A1E3A559600188CDD /* SoundObjects.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SoundObjects.h; sourceTree = "<group>"; };
+		2E388C9A1E3A559600188CDD /* SoundObject.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SoundObject.h; sourceTree = "<group>"; };
 		2FD4B0329909D3527F003494 /* UdpSocket.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = UdpSocket.h; path = ../../../addons/ofxOsc/libs/oscpack/src/ip/UdpSocket.h; sourceTree = SOURCE_ROOT; };
 		318ABED90EADFB757FFDCCAF /* ofxVectorGraphics.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = ofxVectorGraphics.cpp; path = ../../../addons/ofxVectorGraphics/src/ofxVectorGraphics.cpp; sourceTree = SOURCE_ROOT; };
 		34BF591C646B5F6EF968D620 /* CreEPS.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = CreEPS.cpp; path = ../../../addons/ofxVectorGraphics/libs/CreEPS.cpp; sourceTree = SOURCE_ROOT; };
@@ -584,7 +584,7 @@
 				07FB0C09594E9260DAD56C86 /* GateSF.h */,
 				DF082EFBD9CBC8E813355CD5 /* Sensor.h */,
 				AEE368D4C907572305D34DFE /* User.h */,
-				2E388C9A1E3A559600188CDD /* SoundObjects.h */,
+				2E388C9A1E3A559600188CDD /* SoundObject.h */,
 			);
 			path = src;
 			sourceTree = SOURCE_ROOT;
