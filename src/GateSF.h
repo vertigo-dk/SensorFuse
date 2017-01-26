@@ -15,6 +15,7 @@
 #include "SoundObject.h"
 #include "User.h"
 #include <cstdlib>
+#include <limits>
 
 #define TRIGGER_NO 0
 #define TRIGGER_MAYBE 1
@@ -66,7 +67,7 @@ public:
             if(n->isActivated()){
                 //create particle and add velociy
                 float velocity =  (distanceToNeighbour/std::abs(n->lastActivationTime - this->lastActivationTime));
-                ofVec2f velocityVector = ofVec2f((this->position.x-n->position.x),0).normalize() * velocity *1/ofGetFrameRate() ;
+                ofVec2f velocityVector = ofVec2f((this->position.x-n->position.x),0).normalize() * velocity ;
                 createOrMoveUser(velocityVector);
                 break;
             }
@@ -148,9 +149,17 @@ public:
             
             
             User user = User(world,ofVec2f(this->position.x,this->position.y+width/2),velocityVector, ofToString(userId));
+            int closestDist = std::numeric_limits<int>::max();
+            SoundObject* closestSoundObject;
             for(auto& s : *soundObjects){
-                s.createAttraction(user.getAttractionParticle_ptr());
+                int dist = user.getPosition().distance(s.getPosition());
+                if(dist < closestDist){
+                    closestSoundObject = &s;
+                    closestDist = dist;
+                }
             }
+            
+            closestSoundObject->createAttraction(user.getAttractionParticle_ptr());
             this->users->push_back(user);
         }
     }

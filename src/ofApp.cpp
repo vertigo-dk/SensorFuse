@@ -23,8 +23,8 @@ void ofApp::setup(){
     // setup world for physics
     world = World2D::create();
     world->setGravity(ofVec2f(0,0));
-    world->setWorldSize(ofVec2f(-1.5,-1.5), ofVec2f(80.0+3.0,4.0+3.0));
-    world->disableCollision();
+    world->setWorldSize(ofVec2f(-1.5,-1.5), ofVec2f(80.0+1.5,4.0+1.5));
+    world->enableCollision();
     world->setDrag(1);
     
     //fadetime on the message display
@@ -65,9 +65,19 @@ void ofApp::setup(){
         gates.at(i).addNeighbours(neighbours);
     }
     
+    // Add soundobjects
     for(int i = 0; i < NUMBER_OF_SOUNDOBJECTS; i++){
         ofVec2f initPos = ofVec2f(ofRandom(0,80), ofRandom(0, 4));
         soundObjects.push_back(SoundObject(&world, initPos));
+    }
+    
+    // Create small amount of repulsion to other sound objects
+    for (int i = 0; i<soundObjects.size(); i++) {
+        for (int j = 0; j<soundObjects.size(); j++) {
+            if(i != j){ // laziest code
+                soundObjects.at(i).repelOtherSoundObject(&soundObjects.at(j));
+            }
+        }
     }
     
     gateDisplay.resize(NUM_GATE_DISPLAY);
@@ -87,7 +97,7 @@ void ofApp::update(){
     // Delete dead users
     vector<User>::iterator it = users.begin();
     while(it != users.end()) {
-            (*it).update();
+        (*it).update();
         if((*it).hasTravelledForTooLongNow()) {
             it = users.erase(it);
         }

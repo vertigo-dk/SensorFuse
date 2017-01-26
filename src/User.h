@@ -18,12 +18,13 @@ public:
     User(World2D_ptr* world, ofVec2f position, ofVec2f velocity, string userId){
         this->particle = (*world)->makeParticle();
         this->particle->moveTo(position);
-        this->particle->addVelocity(velocity);
+        this->particle->addVelocity(velocity*1/ofGetFrameRate());
         this->particle->setRadius(0.1);
         this->particle->disableCollision();
         this->activationPosition = position;
         this->userId = userId;
         this->timeOfBirth = ofGetElapsedTimef();
+        this->velocity = velocity.x;
         
         // Attractor particle for sound objects
         this->attractorParticle = (*world)->makeParticle();
@@ -50,8 +51,9 @@ public:
     }
     
     void setVelocity(ofVec2f vel){
-        this->particle->setVelocity(vel);
+        this->particle->setVelocity(vel*1/ofGetFrameRate());
         activationPosition = this->particle->getPosition();
+        velocity = vel.x;
     }
     
     ofVec2f getPosition(){
@@ -63,7 +65,7 @@ public:
     }
     
     float getVelocity(){
-        return particle->getVelocity().x;
+        return velocity;
     }
     
     bool isMovingRight(){
@@ -83,6 +85,7 @@ private:
     float maxDist = 3.0;
     float timeOfBirth = 0;
     string userId = "ID NOT SET";
+    float velocity = 0;
 };
 
 #endif /* User_h */

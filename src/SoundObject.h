@@ -38,9 +38,18 @@ public:
         attractions.push_back(attraction);
     }
     
+    void repelOtherSoundObject(SoundObject* repeller){
+        (*world)->makeAttraction(this->particle, repeller->particle, repulsionStrength);
+    }
+    
+    ofVec2f getPosition(){
+        return this->particle->getPosition();
+    }
+    
 //private:
     Particle2D_ptr particle;
     float attractionStrength = 0.3;
+    float repulsionStrength = -0.3;
     float distThreshold = 30.0;
     float maxDistAttraction = 20.0f;
     float minDistAttraction = 2.0f;
