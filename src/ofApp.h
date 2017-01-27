@@ -12,10 +12,11 @@
 #define NUM_MSG_STRINGS 30
 #define NUM_GATE_DISPLAY 100
 #define DEBUG 0
-#define NUMBER_OF_SOUNDOBJECTS 5
+#define NUMBER_OF_SOUNDOBJECTS 6
 
 #define SENDHOST "localhost"
-#define SENDPORT 49162
+#define SENDPORT_VISUAL 49162
+#define SENDPORT_AUDIO 49163
 #define LASTARTNETADDR 32
 
 class ofApp : public ofBaseApp{
@@ -44,7 +45,8 @@ public:
     float fadeTime;
     
     ofxOscReceiver	receiver;
-    ofxOscSender sender;
+    ofxOscSender senderVisual;
+    ofxOscSender senderAudio;
     
     int				current_msg_string;
     string          msg_strings[NUM_MSG_STRINGS];

@@ -57,7 +57,7 @@ public:
         
         ofSetColor(color);
         ofSetLineWidth(3);
-        ofDrawLine(position,ofVec2f(position.x,position.y+width));
+        ofDrawLine(ofVec2f(position.x,position.y-width/2),ofVec2f(position.x,position.y+width/2));
     }
     
     void activate(){
@@ -148,7 +148,7 @@ public:
             }
             
             
-            User user = User(world,ofVec2f(this->position.x,this->position.y+width/2),velocityVector, ofToString(userId));
+            User user = User(world,ofVec2f(this->position.x,this->position.y),velocityVector, ofToString(userId));
             int closestDist = std::numeric_limits<int>::max();
             SoundObject* closestSoundObject;
             for(auto& s : *soundObjects){

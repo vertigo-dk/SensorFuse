@@ -22,7 +22,8 @@ public:
         this->particle->setRadius(0.3);
         this->particle->moveTo(initPos);
         this->particle->disableCollision();
-        this->particle->addVelocity(ofVec2f(-0.1,0.0));
+        this->particle->setMass(10);
+        this->particle->addVelocity(ofVec2f(ofRandom(-10., 10.),ofRandom(-0.01, 0.01)));
     }
     
     void draw(){
@@ -50,7 +51,7 @@ public:
     
 //private:
     Particle2D_ptr particle;
-    float attractionStrength = 0.3;
+    float attractionStrength = 0.1;
     float repulsionStrength = -0.005;
     float distThreshold = 30.0;
     float maxDistAttraction = 20.0f;

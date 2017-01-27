@@ -8,12 +8,19 @@
 
 #include "ofApp.h"
 
+#define NUM_GATES 40
+#define SPACING_ENDS 4
+#define SPACING_SIDE 5
+#define INSTALLATION_LENGTH (NUM_GATES-1)*2
+#define INSTALLATION_WIDTH 4
+
 //--------------------------------------------------------------
 void ofApp::setup(){
     // listen on the given port
     cout << "listening for osc messages on port " << PORT << "\n";
     receiver.setup( PORT );
-    sender.setup( SENDHOST, SENDPORT );
+    senderVisual.setup( SENDHOST, SENDPORT_VISUAL );
+    senderAudio.setup( SENDHOST, SENDPORT_AUDIO );
     
     current_msg_string = 0;
     
@@ -23,7 +30,7 @@ void ofApp::setup(){
     // setup world for physics
     world = World2D::create();
     world->setGravity(ofVec2f(0,0));
-    world->setWorldSize(ofVec2f(-1.5,-1.5), ofVec2f(80.0+1.5,4.0+1.5));
+    world->setWorldSize(ofVec2f(0,0), ofVec2f(INSTALLATION_LENGTH+SPACING_ENDS*2, INSTALLATION_WIDTH+SPACING_SIDE*2));
     world->enableCollision();
     world->setDrag(1);
     
@@ -43,8 +50,8 @@ void ofApp::setup(){
     //init Sensor objects in the artnetAddrs list with artnet name
     for(auto& address : artnetAddrs){
         // Create gate
-        ofVec2f position = ofVec2f((2.0*i)+2.0, 0);
-        gates[i] = GateSF(address,position,&users,&world, &guiParameters, &sender, &soundObjects);
+        ofVec2f position = ofVec2f((2.0*i)+SPACING_ENDS, INSTALLATION_WIDTH/2+SPACING_SIDE);
+        gates[i] = GateSF(address,position,&users,&world, &guiParameters, &senderVisual, &soundObjects);
         gates[i].index = i;
         i++;
     }
@@ -67,20 +74,21 @@ void ofApp::setup(){
     
     // Add soundobjects
     for(int i = 0; i < NUMBER_OF_SOUNDOBJECTS; i++){
-        ofVec2f initPos = ofVec2f(ofRandom(0,80), ofRandom(0, 4));
+        ofVec2f initPos = ofVec2f(ofRandom(0,INSTALLATION_LENGTH+SPACING_ENDS*2), ofRandom(0, INSTALLATION_WIDTH+SPACING_SIDE*2));
         soundObjects.push_back(SoundObject(&world, initPos));
     }
     
     // Create small amount of repulsion to other sound objects
-    for (int i = 0; i<soundObjects.size(); i++) {
-        for (int j = 0; j<soundObjects.size(); j++) {
-            if(i != j){ // laziest code
-                soundObjects.at(i).repelOtherSoundObject(&soundObjects.at(j));
-            }
-        }
-    }
+//    for (int i = 0; i<soundObjects.size(); i++) {
+//        for (int j = 0; j<soundObjects.size(); j++) {
+//            if(i != j){ // laziest code
+//                soundObjects.at(i).repelOtherSoundObject(&soundObjects.at(j));
+//            }
+//        }
+//    }
     
     gateDisplay.resize(NUM_GATE_DISPLAY);
+    
 }
 
 //--------------------------------------------------------------
@@ -153,20 +161,20 @@ void ofApp::update(){
         ofxOscMessage m;
         m.setAddress("/soundObject/" + ofToString(i));
         ofVec2f pos = soundObjects.at(i).getPosition();
-        m.addFloatArg(pos.x/(80+3));
-        m.addFloatArg((pos.y+3.5)/(4+3));
-        sender.sendMessage(m);
+        m.addFloatArg(pos.x - SPACING_ENDS);
+        m.addFloatArg(pos.y - (SPACING_SIDE+INSTALLATION_WIDTH/2));
+        senderVisual.sendMessage(m);
+        senderAudio.sendMessage(m);
     }
     
     for(auto& u : users){
         // send user position
         ofxOscMessage m;
         m.setAddress("/User/"+u.getId());
-        float normPos = u.getPosition().x/(gates.size()*2.0);
-        m.addFloatArg(normPos); // normalized position
+        m.addFloatArg(u.getPosition().x - SPACING_ENDS); // position
         m.addFloatArg(u.getLifespan());
         m.addFloatArg(u.getVelocity());
-        sender.sendMessage(m);
+        senderVisual.sendMessage(m);
     }
 }
 
@@ -174,29 +182,31 @@ void ofApp::update(){
 void ofApp::draw(){
     ofBackground(ofColor::dimGray);
     ofPushMatrix();
-    ofTranslate(0, gui.getHeight()+25);
-    ofScale(10,10);
-    
-    if(drawGatesToggle){
-        for(auto& g : gates){
-            g.second.draw();
+    {
+        ofTranslate(ofGetWidth()/2, gui.getHeight()+10+(ofGetHeight()-gui.getHeight()-10)/2);
+        ofScale(10,10);
+        ofTranslate(-INSTALLATION_LENGTH/2-SPACING_ENDS, -INSTALLATION_WIDTH/2-SPACING_SIDE);
+
+        if(drawGatesToggle){
+            for(auto& g : gates){
+                g.second.draw();
+            }
+        }
+        
+        if(drawUsersToggle){
+            for(auto& u : users){
+                u.draw();
+            }
+        }
+        
+        ofNoFill();
+        ofSetColor(ofColor::antiqueWhite);
+        ofDrawRectangle(0, 0, INSTALLATION_LENGTH+SPACING_ENDS*2, INSTALLATION_WIDTH+SPACING_SIDE*2); // Draw borders of world;
+        
+        for(auto& s : soundObjects){
+            s.draw();
         }
     }
-    
-    if(drawUsersToggle){
-        for(auto& u : users){
-            u.draw();
-        }
-    }
-    
-    ofNoFill();
-    ofSetColor(ofColor::antiqueWhite);
-    ofDrawRectangle(-1.5, -1.5, 80+3.0, 4+3.0); // Draw borders of world;
-    
-    for(auto& s : soundObjects){
-        s.draw();
-    }
-    
     ofPopMatrix();
     
     std::string info;
