@@ -79,13 +79,13 @@ void ofApp::setup(){
     }
     
     // Create small amount of repulsion to other sound objects
-//    for (int i = 0; i<soundObjects.size(); i++) {
-//        for (int j = 0; j<soundObjects.size(); j++) {
-//            if(i != j){ // laziest code
-//                soundObjects.at(i).repelOtherSoundObject(&soundObjects.at(j));
-//            }
-//        }
-//    }
+    for (int i = 0; i<soundObjects.size(); i++) {
+        for (int j = 0; j<soundObjects.size(); j++) {
+            if(i != j){ // laziest code
+                soundObjects.at(i).repelOtherSoundObject(&soundObjects.at(j));
+            }
+        }
+    }
     
     gateDisplay.resize(NUM_GATE_DISPLAY);
     
@@ -98,6 +98,39 @@ void ofApp::update(){
         if ( timers[i] < ofGetElapsedTimef() - fadeTime )
             msg_strings[i] = "";
     }
+    
+    // Keep Some speed in SoundObjects
+    // estimate some kind of energy measure -> average velocity on x
+    float avgVelocity;
+    for(auto & soundObject : soundObjects){
+        avgVelocity += soundObject.getVelocity().length();
+    }
+    avgVelocity /= soundObjects.size();
+    
+    float targetAvgVelocity = 1.5;
+    float pFactor = 0.05; // how fast does it change
+    
+    float deltaVelocity = targetAvgVelocity-avgVelocity;
+    float changeFactor = 0;
+
+    if(deltaVelocity<0) changeFactor = 1-(abs(deltaVelocity)*pFactor);
+    if(deltaVelocity>0) changeFactor = 1+(abs(deltaVelocity)*pFactor);
+    
+    for(auto & soundObject : soundObjects){
+        ofVec2f velocity = soundObject.getVelocity();
+        velocity.operator*=(ofVec2f(changeFactor));
+        velocity.operator*=(ofVec2f(1.01,.99)); // make them move sideways
+        float maxSpeed = targetAvgVelocity*3;
+        float minSpeed = targetAvgVelocity/2;
+        if(velocity.length() > maxSpeed){ // restrict maximum speed
+            velocity = velocity.getNormalized().operator*=(maxSpeed);
+        }else if(velocity.length() < minSpeed){ // make them move
+            velocity += ofVec2f(ofRandom(-.1, 0.1),ofRandom(-0.1, 0.1));
+            velocity = velocity.getNormalized().operator*=(minSpeed);
+        }
+        soundObject.setVelocity(velocity);
+    }
+
     
     // MSA update for physics simulation
     world->update();

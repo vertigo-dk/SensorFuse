@@ -18,7 +18,7 @@ public:
     User(World2D_ptr* world, ofVec2f position, ofVec2f velocity, string userId){
         this->particle = (*world)->makeParticle();
         this->particle->moveTo(position);
-        this->particle->addVelocity(velocity);
+        this->particle->addVelocity(velocity*1/ofGetFrameRate());
         this->particle->setRadius(0.1);
         this->particle->disableCollision();
         this->activationPosition = position;
@@ -51,7 +51,7 @@ public:
     }
     
     void setVelocity(ofVec2f vel){
-        this->particle->setVelocity(vel);
+        this->particle->setVelocity(vel*1/ofGetFrameRate());
         activationPosition = this->particle->getPosition();
         velocity = vel.x;
     }

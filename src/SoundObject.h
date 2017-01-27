@@ -23,7 +23,7 @@ public:
         this->particle->moveTo(initPos);
         this->particle->disableCollision();
         this->particle->setMass(10);
-        this->particle->addVelocity(ofVec2f(ofRandom(-10., 10.),ofRandom(-0.01, 0.01)));
+        this->particle->addVelocity(ofVec2f(ofRandom(-10., 10.),ofRandom(-1., 1.)));
     }
     
     void draw(){
@@ -47,6 +47,14 @@ public:
     
     ofVec2f getPosition(){
         return this->particle->getPosition();
+    }
+    
+    ofVec2f getVelocity(){
+        return this->particle->getVelocity()*ofGetFrameRate();
+    }
+
+    void setVelocity(ofVec2f vel){
+        return this->particle->setVelocity(vel/ofGetFrameRate());
     }
     
 //private:
