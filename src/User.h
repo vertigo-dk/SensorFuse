@@ -15,22 +15,27 @@ using namespace msa::physics;
 
 class User{
 public:
-    User(World2D_ptr* world, ofVec2f position, ofVec2f velocity, string userId){
+    User(World2D_ptr* world, ofVec2f position, string userId, int lastActivationGateId){
         this->particle = (*world)->makeParticle();
         this->particle->moveTo(position);
-        this->particle->addVelocity(velocity*1/ofGetFrameRate());
         this->particle->setRadius(0.1);
         this->particle->disableCollision();
-        this->activationPosition = position;
+        this->activationPosition = position.x;
         this->userId = userId;
         this->timeOfBirth = ofGetElapsedTimef();
-        this->velocity = velocity.x;
         
         // Attractor particle for sound objects
         this->attractorParticle = (*world)->makeParticle();
         this->attractorParticle->moveTo(particle->getPosition());
         this->attractorParticle->setRadius(0.1);
         this->attractorParticle->makeFixed();
+        
+        this->lastActivationTime = ofGetElapsedTimef();
+        this->lastActivationGateId = lastActivationGateId;
+    }
+    
+    ~User(){
+        this->attractorParticle->kill();
     }
     
     void draw(){
@@ -47,12 +52,16 @@ public:
     }
     
     bool hasTravelledForTooLongNow(){
-        return activationPosition.distance(this->particle->getPosition()) > maxDist;
+        return abs(this->particle->getPosition().x-activationPosition) > abs(velocity*3.);
+    }
+    
+    float getTimeSinceLastActivation(){
+        return ofGetElapsedTimef()-lastActivationTime;
     }
     
     void setVelocity(ofVec2f vel){
         this->particle->setVelocity(vel*1/ofGetFrameRate());
-        activationPosition = this->particle->getPosition();
+        activationPosition = this->particle->getPosition().x;
         velocity = vel.x;
     }
     
@@ -68,6 +77,9 @@ public:
         return velocity;
     }
     
+    void setLastActivationGateId(int id){ lastActivationGateId = id; }
+    void setLastActivationTime(float lastActivationTime){ this->lastActivationTime = lastActivationTime; }
+    
     bool isMovingRight(){
         return particle->getVelocity().x > 0;
     }
@@ -76,16 +88,48 @@ public:
         return &this->attractorParticle;
     }
     
+    void activate(int gateId){
+        
+        if(gateId == lastActivationGateId){
+            this->lastActivationTime = ofGetElapsedTimef();
+            return;
+        }
+        
+        float distanceTraveled = (gateId - lastActivationGateId)*2.;
+        
+        float distanceToTravel = 0;
+        if(distanceTraveled > 0){
+            distanceToTravel= ((gateId+1)*2.0+4.) - this->particle->getPosition().x;
+        }else{
+            distanceToTravel = ((gateId-1.)*2.0+4.) - this->particle->getPosition().x;
+        }
+        float deltaTime = ofGetElapsedTimef()-lastActivationTime;
+        
+        velocity = (float)distanceTraveled/deltaTime;
+        
+        velocity *= abs(distanceToTravel) / 2.;
+        cout << "user #" << userId << " deltaTime " << deltaTime << " deltaDist " << distanceTraveled << " vel " << velocity << endl;
+        
+        this->particle->setVelocity(ofVec2f(velocity, 0.)/ofGetFrameRate());
+        
+        this->activationPosition = this->particle->getPosition().x;
+        
+        this->lastActivationTime = ofGetElapsedTimef();
+        this->lastActivationGateId = gateId;
+    }
+    
     string getId(){ return userId; }
 private:
     Particle2D_ptr particle;
     Particle2D_ptr attractorParticle;
 
-    ofVec2f activationPosition;
-    float maxDist = 3.0;
+    float activationPosition;
+    float maxDist = 4.5;
     float timeOfBirth = 0;
     string userId = "ID NOT SET";
     float velocity = 0;
+    int lastActivationGateId;
+    float lastActivationTime;
 };
 
 #endif /* User_h */

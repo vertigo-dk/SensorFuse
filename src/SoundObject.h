@@ -64,7 +64,7 @@ public:
     float distThreshold = 30.0;
     float maxDistAttraction = 20.0f;
     float minDistAttraction = 2.0f;
-    float maxDistRepulsion = 2.0f;
+    float maxDistRepulsion = 5.0f;
     float minDistRepulsion = 0.5f;
     World2D_ptr* world;
     vector<Attraction2D_ptr> attractions;

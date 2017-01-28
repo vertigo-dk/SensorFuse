@@ -51,25 +51,8 @@ void ofApp::setup(){
     for(auto& address : artnetAddrs){
         // Create gate
         ofVec2f position = ofVec2f((2.0*i)+SPACING_ENDS, INSTALLATION_WIDTH/2+SPACING_SIDE);
-        gates[i] = GateSF(address,position,&users,&world, &guiParameters, &senderVisual, &soundObjects);
-        gates[i].index = i;
+        gates[i] = GateSF(i, address,position,&users,&world, &guiParameters, &senderVisual, &soundObjects);
         i++;
-    }
-    
-    // Add pointers to neighbours
-    for(int i = 0; i < gates.size(); i++){
-        std::vector<GateSF*> neighbours;
-        // special cases for outer gates:
-        if(i == 0){
-            neighbours.push_back(&gates.at(1));
-        }else if(i == gates.size()-1){
-            neighbours.push_back(&gates.at(gates.size()-2));
-        }else{
-            // TWO NEIGHBOURS
-            neighbours.push_back(&gates.at(i-1));
-            neighbours.push_back(&gates.at(i+1));
-        }
-        gates.at(i).addNeighbours(neighbours);
     }
     
     // Add soundobjects
@@ -139,7 +122,7 @@ void ofApp::update(){
     vector<User>::iterator it = users.begin();
     while(it != users.end()) {
         (*it).update();
-        if((*it).hasTravelledForTooLongNow()) {
+        if((*it).hasTravelledForTooLongNow() || (*it).getTimeSinceLastActivation() > 4.) {
             it = users.erase(it);
         }
         else ++it;

@@ -33,7 +33,7 @@ public:
     }
     
     
-    GateSF(string address, ofVec2f position, vector<User>* users, World2D_ptr* world, ofParameterGroup* parameterGroup, ofxOscSender* sender, vector<SoundObject>* soundObjects){
+    GateSF(int gateId, string address, ofVec2f position, vector<User>* users, World2D_ptr* world, ofParameterGroup* parameterGroup, ofxOscSender* sender, vector<SoundObject>* soundObjects){
         this->artnetAddress = address;
         sensor = Sensor(address, parameterGroup);
         this->position = position;
@@ -42,11 +42,9 @@ public:
         this->soundObjects = soundObjects;
         this->timingThreshold = &parameterGroup->get("timingThreshold").cast<float>();
         this->sender = sender;
+        this->gateId = gateId;
     }
     
-    void addNeighbours(std::vector<GateSF*> neighbours){
-        this->neighbours = neighbours;
-    }
     
     void draw(){
         if(sensor.getTrigger() > 0){
@@ -60,71 +58,50 @@ public:
         ofDrawLine(ofVec2f(position.x,position.y-width/2),ofVec2f(position.x,position.y+width/2));
     }
     
-    void activate(){
-        lastActivationTime = ofGetElapsedTimef();
-        
-        for(auto& n : neighbours){
-            if(n->isActivated()){
-                //create particle and add velociy
-                float velocity =  (distanceToNeighbour/std::abs(n->lastActivationTime - this->lastActivationTime));
-                ofVec2f velocityVector = ofVec2f((this->position.x-n->position.x),0).normalize() * velocity ;
-                createOrMoveUser(velocityVector);
-                break;
-            }
-        }
-        
-        // SEND OSC
-        ofxOscMessage m;
-        m.setAddress("/Gate/"+ofToString(index));
-        m.addInt32Arg(1);
-        sender->sendMessage(m);
-    }
-    
     int oldTrigger = 0;
     
     void update(){
         // Check value of sensor and activate if necessary
         if(oldTrigger == 0 && sensor.getTrigger() > 0){
             activate();
-        }else if(oldTrigger == 2 && sensor.getTrigger() == 0){
-            // SEND OSC
+            
+            // SEND OSC gate 1
             ofxOscMessage m;
-            m.setAddress("/Gate/"+ofToString(index));
+            m.setAddress("/Gate/"+ofToString(gateId));
+            m.addInt32Arg(1);
+            sender->sendMessage(m);
+        }else if(oldTrigger == 2 && sensor.getTrigger() == 0){
+            // SEND OSC gate 0
+            ofxOscMessage m;
+            m.setAddress("/Gate/"+ofToString(gateId));
             m.addInt32Arg(0);
             sender->sendMessage(m);
         }
         oldTrigger = sensor.getTrigger();
     }
     
-    void createOrMoveUser(ofVec2f velocityVector){
-        User* closeUser;
+    void activate(){
+
+        User* closestUser;
+        float distClosest = 2.1;
         bool userClose = false;
-        bool movingRight = velocityVector.x > 0;
         
-        // check for existing user in this position
+        // check if close user?
         for(auto& u : *users){
             int dist = std::abs(this->position.x-u.getPosition().x);
-            if(dist < 1.6){
-                // check for same direction
-                if(movingRight == u.isMovingRight()){
-                    userClose = true;
-                    closeUser = &u; // set local pointer to close user
-                    if(movingRight){
-                        // if user is moving right, deactivate gate to left
-                        neighbours.front()->lastActivationTime = -10;
-                    }else{
-                        // vice-versa
-                        neighbours.back()->lastActivationTime = -10;
-                    }
-                    break; // out of loop
-                }
+            if(dist < distClosest){
+
+                userClose = true;
+                closestUser = &u; // set local pointer to close user
+                distClosest = dist; // to check if closer;
+                
             }
         }
-        
         if(userClose){
             // if found: move existing
-            closeUser->setVelocity(velocityVector);
-        }else{
+            closestUser->activate(gateId);
+            
+        } else {
             // if not: create new
             // find user id
             
@@ -148,7 +125,7 @@ public:
             }
             
             
-            User user = User(world,ofVec2f(this->position.x,this->position.y),velocityVector, ofToString(userId));
+            User user = User(world,ofVec2f(this->position.x,this->position.y), ofToString(userId), gateId);
             int closestDist = std::numeric_limits<int>::max();
             SoundObject* closestSoundObject;
             for(auto& s : *soundObjects){
@@ -160,17 +137,20 @@ public:
             }
             
             closestSoundObject->createAttraction(user.getAttractionParticle_ptr());
+            
+            // create the new USER
             this->users->push_back(user);
         }
+        
+
     }
     
-    bool isActivated(){
-        return ofGetElapsedTimef() - lastActivationTime < *timingThreshold;
-    }
     
+    Sensor sensor; //laser sensor on the gate.
+
+private:
     //MEMBERS
     string artnetAddress = "";
-    Sensor sensor; //laser sensor on the gate.
     
     int triggerVal = 0;     //Current Trigger Value
     
@@ -187,7 +167,7 @@ public:
     float distanceToNeighbour = 2.0;
     ofVec2f position;
     float width = 4.0;
-    int index = 0;
+    int gateId;
 };
 
 
