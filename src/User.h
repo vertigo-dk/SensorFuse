@@ -52,7 +52,7 @@ public:
     }
     
     bool hasTravelledForTooLongNow(){
-        return abs(this->particle->getPosition().x-activationPosition) > abs(velocity*3.);
+        return abs(this->particle->getPosition().x-activationPosition) > 5. ;// abs(velocity*3.);
     }
     
     float getTimeSinceLastActivation(){
@@ -106,9 +106,9 @@ public:
         float deltaTime = ofGetElapsedTimef()-lastActivationTime;
         
         velocity = (float)distanceTraveled/deltaTime;
-        
         velocity *= abs(distanceToTravel) / 2.;
-        cout << "user #" << userId << " deltaTime " << deltaTime << " deltaDist " << distanceTraveled << " vel " << velocity << endl;
+        
+        //cout << "user #" << userId << " deltaTime " << deltaTime << " deltaDist " << distanceTraveled << " vel " << velocity << endl;
         
         this->particle->setVelocity(ofVec2f(velocity, 0.)/ofGetFrameRate());
         

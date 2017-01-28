@@ -63,10 +63,8 @@ void ofApp::setup(){
     
     // Create small amount of repulsion to other sound objects
     for (int i = 0; i<soundObjects.size(); i++) {
-        for (int j = 0; j<soundObjects.size(); j++) {
-            if(i != j){ // laziest code
+        for (int j = i+1; j<soundObjects.size(); j++) {
                 soundObjects.at(i).repelOtherSoundObject(&soundObjects.at(j));
-            }
         }
     }
     
