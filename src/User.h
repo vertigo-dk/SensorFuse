@@ -35,6 +35,7 @@ public:
     }
     
     ~User(){
+        attractions.clear();
         this->attractorParticle->kill();
     }
     
@@ -119,6 +120,8 @@ public:
     }
     
     string getId(){ return userId; }
+    vector<Attraction2D_ptr> attractions;
+
 private:
     Particle2D_ptr particle;
     Particle2D_ptr attractorParticle;

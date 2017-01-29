@@ -136,7 +136,7 @@ public:
                 }
             }
             
-            closestSoundObject->createAttraction(user.getAttractionParticle_ptr());
+            user.attractions.push_back(closestSoundObject->createAttraction(user.getAttractionParticle_ptr()));
             
             // create the new USER
             this->users->push_back(user);

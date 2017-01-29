@@ -31,12 +31,12 @@ public:
         ofDrawSphere(particle->getPosition(),particle->getRadius());
     }
     
-    void createAttraction(Particle2D_ptr* attractor){
+    Attraction2D_ptr createAttraction(Particle2D_ptr* attractor){
         Attraction2D_ptr attraction = (*world)->makeAttraction(this->particle, (*attractor), attractionStrength);
         // set constrains for attraction
         attraction->setMaxDistance(maxDistAttraction);
         attraction->setMinDistance(minDistAttraction);
-        attractions.push_back(attraction);
+        return attraction;
     }
     
     void repelOtherSoundObject(SoundObject* repeller){
@@ -67,7 +67,6 @@ public:
     float maxDistRepulsion = 5.0f;
     float minDistRepulsion = 0.5f;
     World2D_ptr* world;
-    vector<Attraction2D_ptr> attractions;
     std::string getPositionString(){
         stringstream stream;
         stream << fixed << setprecision(0) << this->particle->getPosition().x << ", " << this->particle->getPosition().y;
