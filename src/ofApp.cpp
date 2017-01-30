@@ -51,7 +51,7 @@ void ofApp::setup(){
     for(auto& address : artnetAddrs){
         // Create gate
         ofVec2f position = ofVec2f((2.0*i)+SPACING_ENDS, INSTALLATION_WIDTH/2+SPACING_SIDE);
-        gates[i] = GateSF(i, address,position,&users,&world, &guiParameters, &senderVisual, &soundObjects);
+        gates[ofToInt(address)] = GateSF(i, address,position,&users,&world, &guiParameters, &senderVisual, &soundObjects);
         i++;
     }
     
@@ -64,7 +64,7 @@ void ofApp::setup(){
     // Create small amount of repulsion to other sound objects
     for (int i = 0; i<soundObjects.size(); i++) {
         for (int j = i+1; j<soundObjects.size(); j++) {
-                soundObjects.at(i).repelOtherSoundObject(&soundObjects.at(j));
+            soundObjects.at(i).repelOtherSoundObject(&soundObjects.at(j));
         }
     }
     
@@ -93,7 +93,7 @@ void ofApp::update(){
     
     float deltaVelocity = targetAvgVelocity-avgVelocity;
     float changeFactor = 0;
-
+    
     if(deltaVelocity<0) changeFactor = 1-(abs(deltaVelocity)*pFactor);
     if(deltaVelocity>0) changeFactor = 1+(abs(deltaVelocity)*pFactor);
     
@@ -111,7 +111,7 @@ void ofApp::update(){
         }
         soundObject.setVelocity(velocity);
     }
-
+    
     
     // MSA update for physics simulation
     world->update();
@@ -143,7 +143,10 @@ void ofApp::update(){
             long timeTriggered = ofGetElapsedTimeMillis();
             
             //add trigger value and timestamp to sensor@artnetAddr
-            gates[artnet].sensor.add(value,timeTriggered);
+            // check if entry exists in map
+            map<int,GateSF>::iterator i = gates.find(artnet);
+            if (i == gates.end()) { /* Not found */ }
+            else { gates[artnet].sensor.add(value,timeTriggered); }
             
             
             
@@ -200,7 +203,7 @@ void ofApp::draw(){
         ofTranslate(ofGetWidth()/2, gui.getHeight()+10+(ofGetHeight()-gui.getHeight()-10)/2);
         ofScale(10,10);
         ofTranslate(-INSTALLATION_LENGTH/2-SPACING_ENDS, -INSTALLATION_WIDTH/2-SPACING_SIDE);
-
+        
         if(drawGatesToggle){
             for(auto& g : gates){
                 g.second.draw();
