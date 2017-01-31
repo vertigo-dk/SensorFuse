@@ -124,6 +124,11 @@ void ofApp::update(){
             int artnet = ofToInt(msgTokens[1]);
             //get value of BeamBreak, 0=false, 1=true
             int value = m.getArgAsInt32(0);
+            if(value != 1 && value != 0)
+            {
+                ofLog(OF_LOG_ERROR) << "Faulty value " << value << " received from address: " << artnet;
+                value = 0;
+            } // no errors if wrong messages are received
             long timeTriggered = ofGetElapsedTimeMillis();
             
             //add trigger value and timestamp to sensor@artnetAddr
