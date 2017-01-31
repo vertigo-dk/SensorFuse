@@ -130,13 +130,16 @@ public:
             SoundObject* closestSoundObject;
             for(auto& s : *soundObjects){
                 int dist = user.getPosition().distance(s.getPosition());
-                if(dist < closestDist){
+                if(dist < closestDist && !s.isOccupied()){
                     closestSoundObject = &s;
                     closestDist = dist;
                 }
             }
             
             user.attractions.push_back(closestSoundObject->createAttraction(user.getAttractionParticle_ptr()));
+            
+            // IMPORTANT:
+            user.setAttractedSoundObject(closestSoundObject);
             
             // create the new USER
             this->users->push_back(user);

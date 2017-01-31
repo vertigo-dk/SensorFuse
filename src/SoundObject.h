@@ -60,6 +60,14 @@ public:
         repulsion->setMinDistance(minDistRepulsion);
     }
     
+    void setOccupied(bool b){
+        occupied = b;
+    }
+    
+    bool isOccupied(){
+        return occupied;
+    }
+    
     ofVec2f getPosition(){
         return this->particle->getPosition();
     }
@@ -87,6 +95,8 @@ public:
         stream << fixed << setprecision(0) << this->particle->getPosition().x << ", " << this->particle->getPosition().y;
         return stream.str();
     }
+    
+    bool occupied = false;
 };
 
 

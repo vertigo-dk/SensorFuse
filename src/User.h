@@ -41,6 +41,7 @@ public:
     void killParticles(){
         // Doing this in the constructor gave issues
         attractions.clear();
+        this->attractedSoundObject->setOccupied(false);
         this->attractorParticle->kill();
         this->particle->kill();
     }
@@ -95,6 +96,11 @@ public:
         return &this->attractorParticle;
     }
     
+    void setAttractedSoundObject(SoundObject* attractedSoundObject){
+        this->attractedSoundObject = attractedSoundObject;
+        this->attractedSoundObject->setOccupied(true);
+    }
+    
     void activate(int gateId){
         
         if(gateId == lastActivationGateId){
@@ -127,11 +133,13 @@ public:
     
     string getId(){ return userId; }
     vector<Attraction2D_ptr> attractions;
-
+    
 private:
     Particle2D_ptr particle;
     Particle2D_ptr attractorParticle;
-
+    
+    SoundObject* attractedSoundObject;
+    
     float activationPosition;
     float maxDist = 4.5;
     float timeOfBirth = 0;
