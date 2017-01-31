@@ -31,6 +31,21 @@ public:
         ofDrawSphere(particle->getPosition(),particle->getRadius());
     }
     
+    void update(float changeFactor, float targetAvgVelocity){
+        ofVec2f velocity = getVelocity();
+        velocity.operator*=(ofVec2f(changeFactor));
+        velocity.operator*=(ofVec2f(1.01,.99)); // make them move sideways
+        float maxSpeed = targetAvgVelocity*3;
+        float minSpeed = targetAvgVelocity/2;
+        if(velocity.length() > maxSpeed){ // restrict maximum speed
+            velocity = velocity.getNormalized().operator*=(maxSpeed);
+        }else if(velocity.length() < minSpeed){ // make them move
+            velocity += ofVec2f(ofRandom(-.1, 0.1),ofRandom(-0.1, 0.1));
+            velocity = velocity.getNormalized().operator*=(minSpeed);
+        }
+        setVelocity(velocity);
+    }
+    
     Attraction2D_ptr createAttraction(Particle2D_ptr* attractor){
         Attraction2D_ptr attraction = (*world)->makeAttraction(this->particle, (*attractor), attractionStrength);
         // set constrains for attraction
