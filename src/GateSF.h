@@ -78,19 +78,6 @@ public:
             sender->sendMessage(m);
         }
         oldTrigger = sensor.getTrigger();
-        
-        // Turn off gate if it hasnt been active in x seconds
-//        if(ofGetElapsedTimef() - lastActivationTime  > 5.0f && !(lastActivationTime ==-10)){
-//            // SEND OSC gate 0
-//            ofxOscMessage m;
-//            m.setAddress("/Gate/"+ofToString(gateId));
-//            m.addInt32Arg(0);
-//            sender->sendMessage(m);
-//            
-//            // Deactivate gate
-//            sensor.add(1, ofGetElapsedTimef());
-//
-//        }
     }
     
     void activate(){

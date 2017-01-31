@@ -17,8 +17,8 @@
 #define TRIGGER_NO 0
 #define TRIGGER_MAYBE 1
 #define TRIGGER_YES 2
-#define UNBROKEN 1
-#define BROKEN 0
+#define UNBROKEN 0
+#define BROKEN 1
 
 class Sensor{
 public:

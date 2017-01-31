@@ -237,7 +237,7 @@ void ofApp::keyPressed(int key){
     if(key-48 > 0 && key-48 < gates.size()){
         long timeTriggered = ofGetElapsedTimeMillis();
         string address = artnetAddrs.at(key-48);
-        gates[ofToInt(address)].sensor.add(0, timeTriggered);
+        gates[ofToInt(address)].sensor.add(1, timeTriggered);
     }
 }
 
@@ -247,7 +247,7 @@ void ofApp::keyReleased(int key){
     if(key-48 > 0 && key-48 < gates.size()){
         long timeTriggered = ofGetElapsedTimeMillis();
         string address = artnetAddrs.at(key-48);
-        gates[ofToInt(address)].sensor.add(1, timeTriggered);
+        gates[ofToInt(address)].sensor.add(0, timeTriggered);
     }
 }
 
