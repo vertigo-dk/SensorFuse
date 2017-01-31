@@ -247,8 +247,8 @@ void ofApp::keyPressed(int key){
     // Activate gate sensors based on key
     if(key-48 > 0 && key-48 < gates.size()){
         long timeTriggered = ofGetElapsedTimeMillis();
-        gates.at(key-47).sensor.add(0, timeTriggered);
-        
+        string address = artnetAddrs.at(key-48);
+        gates[ofToInt(address)].sensor.add(0, timeTriggered);
     }
 }
 
@@ -257,7 +257,8 @@ void ofApp::keyReleased(int key){
     // Deactivate gate sensors based on key
     if(key-48 > 0 && key-48 < gates.size()){
         long timeTriggered = ofGetElapsedTimeMillis();
-        gates.at(key-47).sensor.add(1, timeTriggered);
+        string address = artnetAddrs.at(key-48);
+        gates[ofToInt(address)].sensor.add(1, timeTriggered);
     }
 }
 
