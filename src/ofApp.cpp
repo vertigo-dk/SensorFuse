@@ -104,6 +104,7 @@ void ofApp::update(){
     while(it != users.end()) {
         (*it).update();
         if((*it).hasTravelledForTooLongNow() || (*it).getTimeSinceLastActivation() > 4.) {
+            (*it).killParticles();
             it = users.erase(it);
         }
         else ++it;

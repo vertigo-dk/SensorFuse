@@ -35,8 +35,14 @@ public:
     }
     
     ~User(){
+        
+    }
+    
+    void killParticles(){
+        // Doing this in the constructor gave issues
         attractions.clear();
         this->attractorParticle->kill();
+        this->particle->kill();
     }
     
     void draw(){
