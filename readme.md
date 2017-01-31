@@ -3,7 +3,7 @@ Created by Keith Lim @kidsthesedays. His code has been merged with the logic fro
 
 ### Dependencies:
 * Openframeworks 0.9.8
-* ofxMSAPhysics, ofxMsaCore, ofxGUI
+* ofxMSAPhysics, ofxMsaCore, ofxGUI, ofxJSON, ofxOsc
 
 ### TODO:
 * Check ins and outs
