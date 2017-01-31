@@ -126,7 +126,7 @@ void ofApp::update(){
             int value = m.getArgAsInt32(0);
             if(value != 1 && value != 0)
             {
-                ofLog(OF_LOG_ERROR) << "Faulty value " << value << " received from address: " << artnet;
+                ofLog(OF_LOG_ERROR) << ofGetTimestampString() << " -ии Faulty value " << value << " received from address: " << artnet;
                 value = 0;
             } // no errors if wrong messages are received
             long timeTriggered = ofGetElapsedTimeMillis();
