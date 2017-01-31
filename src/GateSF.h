@@ -40,14 +40,14 @@ public:
         this->users = users;
         this->world = world;
         this->soundObjects = soundObjects;
-        this->timingThreshold = &parameterGroup->get("timingThreshold").cast<float>();
+        this->timingThreshold = &parameterGroup->get("timingThreshold").cast<int>();
         this->sender = sender;
         this->gateId = gateId;
     }
     
     
     void draw(){
-        if(sensor.getTrigger() > 0){
+        if(ofGetElapsedTimeMillis() - lastActivationTime < *timingThreshold){
             color = ofColor::darkRed;
         }else{
             color = ofColor::darkGray;
@@ -81,80 +81,82 @@ public:
     }
     
     void activate(){
-        lastActivationTime = ofGetElapsedTimef();
-        User* closestUser;
-        float distClosest = 2.1;
-        bool userClose = false;
-        
-        // check if close user?
-        for(auto& u : *users){
-            int dist = std::abs(this->position.x-u.getPosition().x);
-            if(dist < distClosest){
-                
-                userClose = true;
-                closestUser = &u; // set local pointer to close user
-                distClosest = dist; // to check if closer;
-                
+        if(ofGetElapsedTimeMillis() - lastActivationTime > *timingThreshold){
+            cout << "Gate: " << gateId << " activated at " << ofGetElapsedTimeMillis() <<  endl;
+            User* closestUser;
+            float distClosest = 2.1;
+            bool userClose = false;
+            
+            // check if close user?
+            for(auto& u : *users){
+                int dist = std::abs(this->position.x-u.getPosition().x);
+                if(dist < distClosest){
+                    
+                    userClose = true;
+                    closestUser = &u; // set local pointer to close user
+                    distClosest = dist; // to check if closer;
+                    
+                }
             }
-        }
-        if(userClose){
-            // if found: move existing
-            closestUser->activate(gateId);
-            
-        } else {
-            // if not: create new
-            // find user id
-            
-            int userId = 1;
-            bool newID = false;
-            if(users->size()>0){
-                while(!newID){
-                    bool isOccupied = false;
-                    for(int i = 0; i<users->size(); i++){
-                        if(ofToInt(users->at(i).getId()) == userId){
-                            isOccupied = true;
-                        }
-                        if(!isOccupied){
-                            newID = true;
-                        }else{
-                            userId++;
-                            
+            if(userClose){
+                // if found: move existing
+                closestUser->activate(gateId);
+                
+            } else {
+                // if not: create new
+                // find user id
+                
+                int userId = 1;
+                bool newID = false;
+                if(users->size()>0){
+                    while(!newID){
+                        bool isOccupied = false;
+                        for(int i = 0; i<users->size(); i++){
+                            if(ofToInt(users->at(i).getId()) == userId){
+                                isOccupied = true;
+                            }
+                            if(!isOccupied){
+                                newID = true;
+                            }else{
+                                userId++;
+                                
+                            }
                         }
                     }
                 }
-            }
-            
-            
-            User user = User(world,ofVec2f(this->position.x,this->position.y), ofToString(userId), gateId);
-            int closestDist = std::numeric_limits<int>::max();
-            SoundObject* closestSoundObject;
-            bool soundObjectFound = false;
-            for(auto& s : *soundObjects){
-                int dist = user.getPosition().distance(s.getPosition());
-                if(dist < closestDist  && !s.isOccupied()){
-                    closestSoundObject = &s;
-                    closestDist = dist;
-                    soundObjectFound = true;
+                
+                // Create new user
+                User user = User(world,ofVec2f(this->position.x,this->position.y), ofToString(userId), gateId);
+                int closestDist = std::numeric_limits<int>::max();
+                SoundObject* closestSoundObject;
+                bool soundObjectFound = false;
+                
+                // Attract to nearest SoundObject
+                for(auto& s : *soundObjects){
+                    int dist = user.getPosition().distance(s.getPosition());
+                    if(dist < closestDist  && !s.isOccupied()){
+                        closestSoundObject = &s;
+                        closestDist = dist;
+                        soundObjectFound = true;
+                    }
                 }
+                if(soundObjectFound){
+                    user.attractions.push_back(closestSoundObject->createAttraction(user.getAttractionParticle_ptr()));
+                    user.setAttractedSoundObject(closestSoundObject);  // IMPORTANT
+                }
+                this->users->push_back(user);
             }
-            if(soundObjectFound){
-                user.attractions.push_back(closestSoundObject->createAttraction(user.getAttractionParticle_ptr()));
-                user.setAttractedSoundObject(closestSoundObject);  // IMPORTANT
-            }
-            // create the new USER
-            this->users->push_back(user);
+            
+            lastActivationTime = ofGetElapsedTimeMillis();
         }
     }
-    
     
     Sensor sensor; //laser sensor on the gate.
     
 private:
     //MEMBERS
     string artnetAddress = "";
-    
     int triggerVal = 0;     //Current Trigger Value
-    
     ofxOscSender* sender;
     
     // Stuff from PositionEstimator
@@ -164,7 +166,7 @@ private:
     vector<SoundObject>* soundObjects;
     ofColor color = ofColor::darkGray;
     float lastActivationTime = -10;
-    ofParameter<float>* timingThreshold;
+    ofParameter<int>* timingThreshold;
     float distanceToNeighbour = 2.0;
     ofVec2f position;
     float width = 4.0;

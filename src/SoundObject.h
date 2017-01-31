@@ -80,7 +80,7 @@ public:
         return this->particle->setVelocity(vel/ofGetFrameRate());
     }
     
-//private:
+private:
     Particle2D_ptr particle;
     float attractionStrength = 0.1;
     float repulsionStrength = -0.005;

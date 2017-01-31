@@ -4,7 +4,7 @@
 //
 //  Created by Keith Lim on 5/1/17.
 //
-// Sensor has value of 1 if laser beam is unbroken. 0 if broken.
+// Sensor has value of 0 if laser beam is unbroken. 1 if broken.
 
 #ifndef Sensor_h
 #define Sensor_h

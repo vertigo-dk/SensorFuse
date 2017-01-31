@@ -69,11 +69,16 @@ void ofApp::setup(){
     }
     
     gateDisplay.resize(NUM_GATE_DISPLAY);
-    
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
+    // Set title to FrameRate
+    std::string title;
+    title+= "Wave_SensorFuse - FPS: ";
+    title+=ofToString(ofGetFrameRate());
+    ofSetWindowTitle(title);
+    
     // MSA update for physics simulation
     world->update();
     
@@ -126,7 +131,7 @@ void ofApp::update(){
             int value = m.getArgAsInt32(0);
             if(value != 1 && value != 0)
             {
-                ofLog(OF_LOG_ERROR) << ofGetTimestampString() << " -ии Faulty value " << value << " received from address: " << artnet;
+                ofLog(OF_LOG_ERROR) << ofGetTimestampString() << " - Faulty value " << value << " received from address: " << artnet;
                 value = 0;
             } // no errors if wrong messages are received
             long timeTriggered = ofGetElapsedTimeMillis();
@@ -135,28 +140,8 @@ void ofApp::update(){
             // check if entry exists in map
             map<int,GateSF>::iterator i = gates.find(artnet);
             if (i == gates.end()) { /* Not found */ }
-            else { gates[artnet].sensor.add(value,timeTriggered); }
-            
-            
-            
-            if(DEBUG){
-                string tempstr = "obj:";
-                tempstr += gates[artnet].sensor.toString();
-                cout << tempstr << "\n";
-            }
-            
-            msg_string += " value=";
-            msg_string += ofToString(value);
-            msg_string += " time=";
-            msg_string += ofToString(ofGetElapsedTimeMillis());
+            else { gates[artnet].activate(); }
         }
-        
-        // add to the list of strings to display
-        msg_strings[current_msg_string] = msg_string;
-        timers[current_msg_string] = ofGetElapsedTimef();
-        current_msg_string = ( current_msg_string + 1 ) % NUM_MSG_STRINGS;
-        // clear the next line
-        msg_strings[current_msg_string] = "";
     }
     
     for(auto& g : gates){
@@ -237,7 +222,9 @@ void ofApp::keyPressed(int key){
     if(key-48 > 0 && key-48 < gates.size()){
         long timeTriggered = ofGetElapsedTimeMillis();
         string address = artnetAddrs.at(key-48);
-        gates[ofToInt(address)].sensor.add(1, timeTriggered);
+//        gates[ofToInt(address)].sensor.add(1, timeTriggered);
+        gates[ofToInt(address)].activate();
+
     }
 }
 
@@ -247,14 +234,14 @@ void ofApp::keyReleased(int key){
     if(key-48 > 0 && key-48 < gates.size()){
         long timeTriggered = ofGetElapsedTimeMillis();
         string address = artnetAddrs.at(key-48);
-        gates[ofToInt(address)].sensor.add(0, timeTriggered);
+//        gates[ofToInt(address)].sensor.add(0, timeTriggered);
     }
 }
 
 //--------------------------------------------------------------
 void ofApp::setupGUI(){
     guiParameters.setName("GUI");
-    guiParameters.add(timingThreshold.set("timing threshold (s)", 2.5,0.5,5.0));
+    guiParameters.add(timingThreshold.set("timing threshold (ms)", 70,20,700));
     guiParameters.add(distanceThreshold.set("dist threshold (m)", 1.9,0.5,4.5));
     guiParameters.add(debounceLower.set("debounce lower (ms)",100,20,400));
     guiParameters.add(debounceHigher.set("debounce higher (ms)",200,40,700));
@@ -266,7 +253,12 @@ void ofApp::setupGUI(){
 
 //--------------------------------------------------------------
 void ofApp::mouseMoved(int x, int y ){
-    
+//    int posX = 0;
+//    if(x > 60 && x < 840){
+//        posX=/840-60;
+//    }
+//    
+//    cout << pos
 }
 
 //--------------------------------------------------------------
