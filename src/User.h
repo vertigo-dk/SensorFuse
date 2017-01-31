@@ -41,7 +41,7 @@ public:
     void killParticles(){
         // Doing this in the constructor gave issues
         attractions.clear();
-        this->attractedSoundObject->setOccupied(false);
+        if(hasAttractedSoundObject){this->attractedSoundObject->setOccupied(false);}
         this->attractorParticle->kill();
         this->particle->kill();
     }
@@ -97,6 +97,7 @@ public:
     }
     
     void setAttractedSoundObject(SoundObject* attractedSoundObject){
+        this->hasAttractedSoundObject = true;
         this->attractedSoundObject = attractedSoundObject;
         this->attractedSoundObject->setOccupied(true);
     }
@@ -139,6 +140,7 @@ private:
     Particle2D_ptr attractorParticle;
     
     SoundObject* attractedSoundObject;
+    bool hasAttractedSoundObject = false;
     
     float activationPosition;
     float maxDist = 4.5;

@@ -81,7 +81,7 @@ public:
     }
     
     void activate(){
-
+        
         User* closestUser;
         float distClosest = 2.1;
         bool userClose = false;
@@ -90,7 +90,7 @@ public:
         for(auto& u : *users){
             int dist = std::abs(this->position.x-u.getPosition().x);
             if(dist < distClosest){
-
+                
                 userClose = true;
                 closestUser = &u; // set local pointer to close user
                 distClosest = dist; // to check if closer;
@@ -128,29 +128,27 @@ public:
             User user = User(world,ofVec2f(this->position.x,this->position.y), ofToString(userId), gateId);
             int closestDist = std::numeric_limits<int>::max();
             SoundObject* closestSoundObject;
+            bool soundObjectFound = false;
             for(auto& s : *soundObjects){
                 int dist = user.getPosition().distance(s.getPosition());
-                if(dist < closestDist && !s.isOccupied()){
+                if(dist < closestDist  && !s.isOccupied()){
                     closestSoundObject = &s;
                     closestDist = dist;
+                    soundObjectFound = true;
                 }
             }
-            
-            user.attractions.push_back(closestSoundObject->createAttraction(user.getAttractionParticle_ptr()));
-            
-            // IMPORTANT:
-            user.setAttractedSoundObject(closestSoundObject);
-            
+            if(soundObjectFound){
+                user.attractions.push_back(closestSoundObject->createAttraction(user.getAttractionParticle_ptr()));
+                user.setAttractedSoundObject(closestSoundObject);  // IMPORTANT
+            }
             // create the new USER
             this->users->push_back(user);
         }
-        
-
     }
     
     
     Sensor sensor; //laser sensor on the gate.
-
+    
 private:
     //MEMBERS
     string artnetAddress = "";
