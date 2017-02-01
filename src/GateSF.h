@@ -23,7 +23,6 @@
 
 static int8_t userIdCount = 0;
 
-
 class GateSF{
     
 public:
@@ -35,7 +34,6 @@ public:
     
     GateSF(int gateId, string address, ofVec2f position, vector<User>* users, World2D_ptr* world, ofParameterGroup* parameterGroup, ofxOscSender* sender, vector<SoundObject>* soundObjects){
         this->artnetAddress = address;
-//        sensor = Sensor(address, parameterGroup);
         this->position = position;
         this->users = users;
         this->world = world;
@@ -134,19 +132,8 @@ public:
             m.setAddress("/Gate/"+ofToString(gateId));
             m.addInt32Arg(1);
             sender->sendMessage(m);
-            
-            
-// When should we send Gate OFF again? NO NEED I GUESS;
-//            // SEND OSC gate 0
-//            ofxOscMessage m;
-//            m.setAddress("/Gate/"+ofToString(gateId));
-//            m.addInt32Arg(0);
-//            sender->sendMessage(m);
-
         }
     }
-    
-//    Sensor sensor; //laser sensor on the gate.
     
 private:
     //MEMBERS
