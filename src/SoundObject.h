@@ -86,7 +86,7 @@ private:
     float repulsionStrength = -0.005;
     float distThreshold = 30.0;
     float maxDistAttraction = 20.0f;
-    float minDistAttraction = 2.0f;
+    float minDistAttraction = 0.5f;
     float maxDistRepulsion = 5.0f;
     float minDistRepulsion = 0.5f;
     World2D_ptr* world;

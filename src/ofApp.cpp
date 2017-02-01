@@ -93,7 +93,7 @@ void ofApp::update(){
     }
     avgVelocity /= soundObjects.size();
     
-    float targetAvgVelocity = 1.5;
+    float targetAvgVelocity = 10.5;
     float pFactor = 0.05; // how fast does it change
     
     float deltaVelocity = targetAvgVelocity-avgVelocity;
@@ -144,10 +144,6 @@ void ofApp::update(){
             map<int,GateSF>::iterator i = gates.find(artnet);
             if (!(i == gates.end())) { gates[artnet].activate(); }
         }
-    }
-    
-    for(auto& g : gates){
-        g.second.update();
     }
     
     for(int i = 0; i < soundObjects.size(); i++){

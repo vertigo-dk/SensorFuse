@@ -35,7 +35,7 @@ public:
     
     GateSF(int gateId, string address, ofVec2f position, vector<User>* users, World2D_ptr* world, ofParameterGroup* parameterGroup, ofxOscSender* sender, vector<SoundObject>* soundObjects){
         this->artnetAddress = address;
-        sensor = Sensor(address, parameterGroup);
+//        sensor = Sensor(address, parameterGroup);
         this->position = position;
         this->users = users;
         this->world = world;
@@ -59,27 +59,6 @@ public:
         ofDrawLine(ofVec2f(position.x,position.y-width/2),ofVec2f(position.x,position.y+width/2));
     }
     
-    int oldTrigger = 0;
-    
-    void update(){
-        // Check value of sensor and activate if necessary
-//        if(oldTrigger == 0 && sensor.getTrigger() > 0){
-//            activate();
-//            
-//            // SEND OSC gate 1
-//            ofxOscMessage m;
-//            m.setAddress("/Gate/"+ofToString(gateId));
-//            m.addInt32Arg(1);
-//            sender->sendMessage(m);
-//        }else if(oldTrigger == 2 && sensor.getTrigger() == 0){
-//            // SEND OSC gate 0
-//            ofxOscMessage m;
-//            m.setAddress("/Gate/"+ofToString(gateId));
-//            m.addInt32Arg(0);
-//            sender->sendMessage(m);
-//        }
-//        oldTrigger = sensor.getTrigger();
-    }
     
     void activate(){
         // TODO: SEND OSC OUT FOR ACTIVATED GATE
@@ -149,10 +128,25 @@ public:
             }
             
             lastActivationTime = ofGetElapsedTimeMillis();
+            
+            // SEND OSC gate 1
+            ofxOscMessage m;
+            m.setAddress("/Gate/"+ofToString(gateId));
+            m.addInt32Arg(1);
+            sender->sendMessage(m);
+            
+            
+// When should we send Gate OFF again? NO NEED I GUESS;
+//            // SEND OSC gate 0
+//            ofxOscMessage m;
+//            m.setAddress("/Gate/"+ofToString(gateId));
+//            m.addInt32Arg(0);
+//            sender->sendMessage(m);
+
         }
     }
     
-    Sensor sensor; //laser sensor on the gate.
+//    Sensor sensor; //laser sensor on the gate.
     
 private:
     //MEMBERS
