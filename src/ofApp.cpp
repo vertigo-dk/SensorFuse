@@ -24,6 +24,9 @@ void ofApp::setup(){
     
     current_msg_string = 0;
     
+    // Setup
+    ofLogToFile("logs/log_ " + ofToString(ofGetDay()) + "_" + ofToString(ofGetMonth()) + "_" + ofToString(ofGetYear()) +  ".txt", true);
+    
     // setup gui
     setupGUI();
     
@@ -139,8 +142,7 @@ void ofApp::update(){
             //add trigger value and timestamp to sensor@artnetAddr
             // check if entry exists in map
             map<int,GateSF>::iterator i = gates.find(artnet);
-            if (i == gates.end()) { /* Not found */ }
-            else { gates[artnet].activate(); }
+            if (!(i == gates.end())) { gates[artnet].activate(); }
         }
     }
     
@@ -222,7 +224,6 @@ void ofApp::keyPressed(int key){
     if(key-48 > 0 && key-48 < gates.size()){
         long timeTriggered = ofGetElapsedTimeMillis();
         string address = artnetAddrs.at(key-48);
-//        gates[ofToInt(address)].sensor.add(1, timeTriggered);
         gates[ofToInt(address)].activate();
 
     }
@@ -230,35 +231,26 @@ void ofApp::keyPressed(int key){
 
 //--------------------------------------------------------------
 void ofApp::keyReleased(int key){
-    // Deactivate gate sensors based on key
-    if(key-48 > 0 && key-48 < gates.size()){
-        long timeTriggered = ofGetElapsedTimeMillis();
-        string address = artnetAddrs.at(key-48);
-//        gates[ofToInt(address)].sensor.add(0, timeTriggered);
-    }
+    
 }
 
 //--------------------------------------------------------------
 void ofApp::setupGUI(){
     guiParameters.setName("GUI");
-    guiParameters.add(timingThreshold.set("timing threshold (ms)", 70,20,700));
-    guiParameters.add(distanceThreshold.set("dist threshold (m)", 1.9,0.5,4.5));
+    guiParameters.add(timingThreshold.set("timing threshold (ms)", 400,70,700));
+    guiParameters.add(distanceThreshold.set("dist threshold (m)", 2.2,2.0,4.5));
     guiParameters.add(debounceLower.set("debounce lower (ms)",100,20,400));
     guiParameters.add(debounceHigher.set("debounce higher (ms)",200,40,700));
     guiParameters.add(drawGatesToggle.set("draw gates", true));
     guiParameters.add(drawUsersToggle.set("draw users", true));
     gui.setup(guiParameters);
+//    gui.saveToFile("settings.xml");
     gui.loadFromFile("settings.xml");
 }
 
 //--------------------------------------------------------------
 void ofApp::mouseMoved(int x, int y ){
-//    int posX = 0;
-//    if(x > 60 && x < 840){
-//        posX=/840-60;
-//    }
-//    
-//    cout << pos
+
 }
 
 //--------------------------------------------------------------

@@ -40,7 +40,8 @@ public:
         this->users = users;
         this->world = world;
         this->soundObjects = soundObjects;
-        this->timingThreshold = &parameterGroup->get("timingThreshold").cast<int>();
+        this->timingThreshold = &parameterGroup->get("timing threshold (ms)").cast<int>();
+        this->distThreshold = &parameterGroup->get("dist threshold (m)").cast<float>();
         this->sender = sender;
         this->gateId = gateId;
     }
@@ -82,16 +83,15 @@ public:
     
     void activate(){
         if(ofGetElapsedTimeMillis() - lastActivationTime > *timingThreshold){
-            cout << "Gate: " << gateId << " activated at " << ofGetElapsedTimeMillis() <<  endl;
+            ofLog(OF_LOG_NOTICE) << ofGetTimestampString()  << " - Gate: " << gateId << " activated" <<  endl;
             User* closestUser;
-            float distClosest = 2.1;
+            float distClosest = *distThreshold;
             bool userClose = false;
             
             // check if close user?
             for(auto& u : *users){
                 int dist = std::abs(this->position.x-u.getPosition().x);
                 if(dist < distClosest){
-                    
                     userClose = true;
                     closestUser = &u; // set local pointer to close user
                     distClosest = dist; // to check if closer;
@@ -167,6 +167,7 @@ private:
     ofColor color = ofColor::darkGray;
     float lastActivationTime = -10;
     ofParameter<int>* timingThreshold;
+    ofParameter<float>* distThreshold;
     float distanceToNeighbour = 2.0;
     ofVec2f position;
     float width = 4.0;
