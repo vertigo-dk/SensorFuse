@@ -63,25 +63,26 @@ public:
     
     void update(){
         // Check value of sensor and activate if necessary
-        if(oldTrigger == 0 && sensor.getTrigger() > 0){
-            activate();
-            
-            // SEND OSC gate 1
-            ofxOscMessage m;
-            m.setAddress("/Gate/"+ofToString(gateId));
-            m.addInt32Arg(1);
-            sender->sendMessage(m);
-        }else if(oldTrigger == 2 && sensor.getTrigger() == 0){
-            // SEND OSC gate 0
-            ofxOscMessage m;
-            m.setAddress("/Gate/"+ofToString(gateId));
-            m.addInt32Arg(0);
-            sender->sendMessage(m);
-        }
-        oldTrigger = sensor.getTrigger();
+//        if(oldTrigger == 0 && sensor.getTrigger() > 0){
+//            activate();
+//            
+//            // SEND OSC gate 1
+//            ofxOscMessage m;
+//            m.setAddress("/Gate/"+ofToString(gateId));
+//            m.addInt32Arg(1);
+//            sender->sendMessage(m);
+//        }else if(oldTrigger == 2 && sensor.getTrigger() == 0){
+//            // SEND OSC gate 0
+//            ofxOscMessage m;
+//            m.setAddress("/Gate/"+ofToString(gateId));
+//            m.addInt32Arg(0);
+//            sender->sendMessage(m);
+//        }
+//        oldTrigger = sensor.getTrigger();
     }
     
     void activate(){
+        // TODO: SEND OSC OUT FOR ACTIVATED GATE
         if(ofGetElapsedTimeMillis() - lastActivationTime > *timingThreshold){
             ofLog(OF_LOG_NOTICE) << ofGetTimestampString()  << " - Gate: " << gateId << " activated" <<  endl;
             User* closestUser;
