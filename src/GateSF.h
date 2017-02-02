@@ -11,7 +11,6 @@
 #define GateSF_h
 
 #include "ofMain.h"
-#include "Sensor.h"
 #include "SoundObject.h"
 #include "User.h"
 #include <cstdlib>
