@@ -64,6 +64,16 @@ void ofApp::setup(){
         soundObjects.push_back(SoundObject(&world, initPos));
     }
     
+    // Create idle particle with attraction for soundobject
+    idleParticle = world->makeParticle();
+    idleParticle->disableCollision()->setRadius(0.1)->moveTo(ofVec2f(44,7));
+    
+    for(auto& s : soundObjects){
+        world->makeAttraction(idleParticle, s.getParticle(), 0.0f);
+    }
+    
+
+
     // Create small amount of repulsion to other sound objects
     for (int i = 0; i<soundObjects.size(); i++) {
         for (int j = i+1; j<soundObjects.size(); j++) {
@@ -85,6 +95,9 @@ void ofApp::update(){
     // MSA update for physics simulation
     world->update();
     
+    // Move idleParticle
+    idleParticle->moveTo(ofVec2f(ofRandom(2,78), ofRandom(1,6)));
+    
     // Keep Some speed in SoundObjects
     // estimate some kind of energy measure -> average velocity on x
     float avgVelocity;
@@ -93,7 +106,7 @@ void ofApp::update(){
     }
     avgVelocity /= soundObjects.size();
     
-    float targetAvgVelocity = 10.5;
+    float targetAvgVelocity = 5.0f;
     float pFactor = 0.05; // how fast does it change
     
     float deltaVelocity = targetAvgVelocity-avgVelocity;
@@ -246,7 +259,7 @@ void ofApp::setupGUI(){
 
 //--------------------------------------------------------------
 void ofApp::mouseMoved(int x, int y ){
-
+    
 }
 
 //--------------------------------------------------------------

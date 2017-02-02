@@ -64,10 +64,10 @@ public:
     //display history of setting for debuging debouncing
     //x = sensorValue, y = triggerConfidence
     vector<ofVec2f> gateDisplay;
-    Sensor testSensor;
 
     // Sound objects moving around
     vector<SoundObject> soundObjects;
+    Particle2D_ptr idleParticle;
 
     // Stuff from positionEstimator
     World2D_ptr world;
