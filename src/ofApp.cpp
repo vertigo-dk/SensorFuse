@@ -106,7 +106,7 @@ void ofApp::update(){
     }
     avgVelocity /= soundObjects.size();
     
-    float targetAvgVelocity = 1.5;
+    float targetAvgVelocity = 5.0f;
     float pFactor = 0.05; // how fast does it change
     
     float deltaVelocity = targetAvgVelocity-avgVelocity;
