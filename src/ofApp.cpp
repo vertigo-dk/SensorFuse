@@ -148,7 +148,7 @@ void ofApp::update(){
     
     for(int i = 0; i < soundObjects.size(); i++){
         ofxOscMessage m;
-        m.setAddress("/soundObject/" + ofToString(i));
+        m.setAddress("/SoundObject/" + ofToString(i));
         ofVec2f pos = soundObjects.at(i).getPosition();
         m.addFloatArg(pos.x - SPACING_ENDS);
         m.addFloatArg(pos.y - (SPACING_SIDE+INSTALLATION_WIDTH/2));
