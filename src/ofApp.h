@@ -67,6 +67,7 @@ public:
 
     // Sound objects moving around
     vector<SoundObject> soundObjects;
+    Particle2D_ptr idleParticle;
 
     // Stuff from positionEstimator
     World2D_ptr world;
