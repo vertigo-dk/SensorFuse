@@ -158,26 +158,30 @@ void ofApp::update(){
             if (!(i == gates.end())) { gates[artnet].activate(); }
         }
     }
-    
-    for(int i = 0; i < soundObjects.size(); i++){
-        ofxOscMessage m;
-        m.setAddress("/SoundObject/" + ofToString(i));
-        ofVec2f pos = soundObjects.at(i).getPosition();
-        m.addFloatArg(pos.x - SPACING_ENDS);
-        m.addFloatArg(pos.y - (SPACING_SIDE+INSTALLATION_WIDTH/2));
-        senderVisual.sendMessage(m);
-        senderAudio.sendMessage(m);
+    if(ofGetElapsedTimeMillis()/50 != oldMillis){
+        for(int i = 0; i < soundObjects.size(); i++){
+            ofxOscMessage m;
+            m.setAddress("/SoundObject/" + ofToString(i));
+            ofVec2f pos = soundObjects.at(i).getPosition();
+            m.addFloatArg(pos.x - SPACING_ENDS);
+            m.addFloatArg(pos.y - (SPACING_SIDE+INSTALLATION_WIDTH/2));
+            senderVisual.sendMessage(m);
+            senderAudio.sendMessage(m);
+        }
+        
+        for(auto& u : users){
+            // send user position
+            ofxOscMessage m;
+            m.setAddress("/User/"+u.getId());
+            m.addFloatArg(u.getPosition().x - SPACING_ENDS); // position
+            m.addFloatArg(u.getLifespan());
+            m.addFloatArg(u.getVelocity());
+            senderVisual.sendMessage(m);
+        }
+        
+        oldMillis = ofGetElapsedTimeMillis()/50;
     }
-    
-    for(auto& u : users){
-        // send user position
-        ofxOscMessage m;
-        m.setAddress("/User/"+u.getId());
-        m.addFloatArg(u.getPosition().x - SPACING_ENDS); // position
-        m.addFloatArg(u.getLifespan());
-        m.addFloatArg(u.getVelocity());
-        senderVisual.sendMessage(m);
-    }
+        
 }
 
 //--------------------------------------------------------------

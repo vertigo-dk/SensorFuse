@@ -127,10 +127,16 @@ public:
             lastActivationTime = ofGetElapsedTimeMillis();
             
             // SEND OSC gate 1
-            ofxOscMessage m;
-            m.setAddress("/Gate/"+ofToString(gateId));
-            m.addInt32Arg(1);
-            sender->sendMessage(m);
+            if(ofGetElapsedTimeMillis()/50 != oldMillis){
+                ofxOscMessage m;
+                m.setAddress("/Gate/"+ofToString(gateId));
+                m.addInt32Arg(1);
+                sender->sendMessage(m);
+                
+                oldMillis = ofGetElapsedTimeMillis()/50;
+            }
+
+      
         }
     }
     
@@ -153,6 +159,7 @@ private:
     ofVec2f position;
     float width = 4.0;
     int gateId;
+    int oldMillis = 0;
 };
 
 

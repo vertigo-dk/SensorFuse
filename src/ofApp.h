@@ -83,6 +83,8 @@ public:
     ofParameter<int> debounceHigher;
     ofParameter<bool> drawGatesToggle;
     ofParameter<bool> drawUsersToggle;
+    
+    int oldMillis = 0;
 };
 
 
