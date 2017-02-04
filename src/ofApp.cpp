@@ -158,7 +158,6 @@ void ofApp::update(){
             if (!(i == gates.end())) { gates[artnet].activate(); }
         }
     }
-    if(ofGetElapsedTimeMillis()/50 != oldMillis){
         for(int i = 0; i < soundObjects.size(); i++){
             ofxOscMessage m;
             m.setAddress("/SoundObject/" + ofToString(i));
@@ -179,7 +178,6 @@ void ofApp::update(){
             senderVisual.sendMessage(m);
         }
         
-        oldMillis = ofGetElapsedTimeMillis()/50;
     }
         
 }

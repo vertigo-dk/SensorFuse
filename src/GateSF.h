@@ -127,14 +127,13 @@ public:
             lastActivationTime = ofGetElapsedTimeMillis();
             
             // SEND OSC gate 1
-            if(ofGetElapsedTimeMillis()/50 != oldMillis){
+
                 ofxOscMessage m;
                 m.setAddress("/Gate/"+ofToString(gateId));
                 m.addInt32Arg(1);
                 sender->sendMessage(m);
                 
-                oldMillis = ofGetElapsedTimeMillis()/50;
-            }
+   
 
       
         }
