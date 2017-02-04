@@ -70,6 +70,8 @@ void ofApp::setup(){
     
     gateDisplay.resize(NUM_GATE_DISPLAY);
     
+     ofLogToFile("log.txt", true);
+    
 }
 
 //--------------------------------------------------------------
@@ -149,6 +151,9 @@ void ofApp::update(){
             msg_string += ofToString(value);
             msg_string += " time=";
             msg_string += ofToString(ofGetElapsedTimeMillis());
+            
+            // RAW LOGGING
+             ofLog() << "Gate, " << artnet << ", "<< value << ", "<< ofGetTimestampString();
         }
         
         // add to the list of strings to display
