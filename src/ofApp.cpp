@@ -72,8 +72,8 @@ void ofApp::setup(){
         world->makeAttraction(idleParticle, s.getParticle(), 0.0f);
     }
     
-
-
+    
+    
     // Create small amount of repulsion to other sound objects
     for (int i = 0; i<soundObjects.size(); i++) {
         for (int j = i+1; j<soundObjects.size(); j++) {
@@ -82,6 +82,8 @@ void ofApp::setup(){
     }
     
     gateDisplay.resize(NUM_GATE_DISPLAY);
+    
+    ofLogToFile("log.txt", true);
 }
 
 //--------------------------------------------------------------
@@ -155,9 +157,12 @@ void ofApp::update(){
             //add trigger value and timestamp to sensor@artnetAddr
             // check if entry exists in map
             map<int,GateSF>::iterator i = gates.find(artnet);
-            if (!(i == gates.end())) { gates[artnet].activate(); }
+            if (!(i == gates.end())) { gates[artnet].activate();
+                
+            }
+            
+            
         }
-    }
         for(int i = 0; i < soundObjects.size(); i++){
             ofxOscMessage m;
             m.setAddress("/SoundObject/" + ofToString(i));
@@ -177,9 +182,7 @@ void ofApp::update(){
             m.addFloatArg(u.getVelocity());
             senderVisual.sendMessage(m);
         }
-        
     }
-        
 }
 
 //--------------------------------------------------------------
@@ -236,7 +239,7 @@ void ofApp::keyPressed(int key){
         long timeTriggered = ofGetElapsedTimeMillis();
         string address = artnetAddrs.at(key-48);
         gates[ofToInt(address)].activate();
-
+        
     }
 }
 
@@ -255,7 +258,7 @@ void ofApp::setupGUI(){
     guiParameters.add(drawGatesToggle.set("draw gates", true));
     guiParameters.add(drawUsersToggle.set("draw users", true));
     gui.setup(guiParameters);
-//    gui.saveToFile("settings.xml");
+    //    gui.saveToFile("settings.xml");
     gui.loadFromFile("settings.xml");
 }
 
