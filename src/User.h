@@ -121,9 +121,7 @@ public:
         
         velocity = (float)distanceTraveled/deltaTime;
         velocity *= abs(distanceToTravel) / 2.;
-        
-        //cout << "user #" << userId << " deltaTime " << deltaTime << " deltaDist " << distanceTraveled << " vel " << velocity << endl;
-        
+                
         this->particle->setVelocity(ofVec2f(velocity, 0.)/ofGetFrameRate());
         
         this->activationPosition = this->particle->getPosition().x;

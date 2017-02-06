@@ -59,22 +59,16 @@ public:
     //need to be ordered asc
     vector<string>  artnetAddrs;
     
-    //const int lastArtNetAddr = 32;
-    //Using arrays, since faster, easy to reference and number of gates is static.
-    
-    //last artnet address  + 1
-//    std::array<GateSF,33> gates;
     std::map<int,GateSF> gates;
     
     //display history of setting for debuging debouncing
     //x = sensorValue, y = triggerConfidence
     vector<ofVec2f> gateDisplay;
-    Sensor testSensor;
 
     // Sound objects moving around
     vector<SoundObject> soundObjects;
+    Particle2D_ptr idleParticle;
 
-    
     // Stuff from positionEstimator
     World2D_ptr world;
     vector<User> users;
@@ -83,12 +77,14 @@ public:
     ofParameterGroup guiParameters;
     ofxPanel gui;
     bool hideGui = false;
-    ofParameter<float> timingThreshold;
+    ofParameter<int> timingThreshold;
     ofParameter<float> distanceThreshold;
     ofParameter<int> debounceLower;
     ofParameter<int> debounceHigher;
     ofParameter<bool> drawGatesToggle;
     ofParameter<bool> drawUsersToggle;
+    
+    int oldMillis = 0;
 };
 
 

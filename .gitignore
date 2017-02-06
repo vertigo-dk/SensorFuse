@@ -5,6 +5,8 @@
 
 /bin/*
 !/bin/data/
+/bin/data/logs
+
 
 #########
 # general

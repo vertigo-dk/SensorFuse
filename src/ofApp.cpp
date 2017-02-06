@@ -24,6 +24,9 @@ void ofApp::setup(){
     
     current_msg_string = 0;
     
+    // Setup
+    ofLogToFile("logs/log_ " + ofToString(ofGetDay()) + "_" + ofToString(ofGetMonth()) + "_" + ofToString(ofGetYear()) +  ".txt", true);
+    
     // setup gui
     setupGUI();
     
@@ -61,6 +64,16 @@ void ofApp::setup(){
         soundObjects.push_back(SoundObject(&world, initPos));
     }
     
+    // Create idle particle with attraction for soundobject
+    idleParticle = world->makeParticle();
+    idleParticle->disableCollision()->setRadius(0.1)->moveTo(ofVec2f(44,7));
+    
+    for(auto& s : soundObjects){
+        world->makeAttraction(idleParticle, s.getParticle(), 0.0f);
+    }
+    
+    
+    
     // Create small amount of repulsion to other sound objects
     for (int i = 0; i<soundObjects.size(); i++) {
         for (int j = i+1; j<soundObjects.size(); j++) {
@@ -76,8 +89,17 @@ void ofApp::setup(){
 
 //--------------------------------------------------------------
 void ofApp::update(){
+    // Set title to FrameRate
+    std::string title;
+    title+= "Wave_SensorFuse - FPS: ";
+    title+=ofToString(ofGetFrameRate());
+    ofSetWindowTitle(title);
+    
     // MSA update for physics simulation
     world->update();
+    
+    // Move idleParticle
+    idleParticle->moveTo(ofVec2f(ofRandom(2,78), ofRandom(1,6)));
     
     // Keep Some speed in SoundObjects
     // estimate some kind of energy measure -> average velocity on x
@@ -87,7 +109,7 @@ void ofApp::update(){
     }
     avgVelocity /= soundObjects.size();
     
-    float targetAvgVelocity = 1.5;
+    float targetAvgVelocity = 5.0f;
     float pFactor = 0.05; // how fast does it change
     
     float deltaVelocity = targetAvgVelocity-avgVelocity;
@@ -128,7 +150,7 @@ void ofApp::update(){
             int value = m.getArgAsInt32(0);
             if(value != 1 && value != 0)
             {
-                ofLog(OF_LOG_ERROR) << ofGetTimestampString() << " -ии Faulty value " << value << " received from address: " << artnet;
+                ofLog(OF_LOG_ERROR) << ofGetTimestampString() << " - Faulty value " << value << " received from address: " << artnet;
                 value = 0;
             } // no errors if wrong messages are received
             long timeTriggered = ofGetElapsedTimeMillis();
@@ -136,15 +158,8 @@ void ofApp::update(){
             //add trigger value and timestamp to sensor@artnetAddr
             // check if entry exists in map
             map<int,GateSF>::iterator i = gates.find(artnet);
-            if (i == gates.end()) { /* Not found */ }
-            else { gates[artnet].sensor.add(value,timeTriggered); }
-            
-            
-            
-            if(DEBUG){
-                string tempstr = "obj:";
-                tempstr += gates[artnet].sensor.toString();
-                cout << tempstr << "\n";
+            if (!(i == gates.end())) { gates[artnet].activate();
+                
             }
             
             msg_string += " value=";
@@ -154,38 +169,27 @@ void ofApp::update(){
             
             // RAW LOGGING
              ofLog() << "Gate, " << artnet << ", "<< value << ", "<< ofGetTimestampString();
+            
+        }
+        for(int i = 0; i < soundObjects.size(); i++){
+            ofxOscMessage m;
+            m.setAddress("/SoundObject/" + ofToString(i));
+            ofVec2f pos = soundObjects.at(i).getPosition();
+            m.addFloatArg(pos.x - SPACING_ENDS);
+            m.addFloatArg(pos.y - (SPACING_SIDE+INSTALLATION_WIDTH/2));
+            senderVisual.sendMessage(m);
+            senderAudio.sendMessage(m);
         }
         
-        // add to the list of strings to display
-        msg_strings[current_msg_string] = msg_string;
-        timers[current_msg_string] = ofGetElapsedTimef();
-        current_msg_string = ( current_msg_string + 1 ) % NUM_MSG_STRINGS;
-        // clear the next line
-        msg_strings[current_msg_string] = "";
-    }
-    
-    for(auto& g : gates){
-        g.second.update();
-    }
-    
-    for(int i = 0; i < soundObjects.size(); i++){
-        ofxOscMessage m;
-        m.setAddress("/soundObject/" + ofToString(i));
-        ofVec2f pos = soundObjects.at(i).getPosition();
-        m.addFloatArg(pos.x - SPACING_ENDS);
-        m.addFloatArg(pos.y - (SPACING_SIDE+INSTALLATION_WIDTH/2));
-        senderVisual.sendMessage(m);
-        senderAudio.sendMessage(m);
-    }
-    
-    for(auto& u : users){
-        // send user position
-        ofxOscMessage m;
-        m.setAddress("/User/"+u.getId());
-        m.addFloatArg(u.getPosition().x - SPACING_ENDS); // position
-        m.addFloatArg(u.getLifespan());
-        m.addFloatArg(u.getVelocity());
-        senderVisual.sendMessage(m);
+        for(auto& u : users){
+            // send user position
+            ofxOscMessage m;
+            m.setAddress("/User/"+u.getId());
+            m.addFloatArg(u.getPosition().x - SPACING_ENDS); // position
+            m.addFloatArg(u.getLifespan());
+            m.addFloatArg(u.getVelocity());
+            senderVisual.sendMessage(m);
+        }
     }
 }
 
@@ -242,30 +246,27 @@ void ofApp::keyPressed(int key){
     if(key-48 > 0 && key-48 < gates.size()){
         long timeTriggered = ofGetElapsedTimeMillis();
         string address = artnetAddrs.at(key-48);
-        gates[ofToInt(address)].sensor.add(1, timeTriggered);
+        gates[ofToInt(address)].activate();
+        
     }
 }
 
 //--------------------------------------------------------------
 void ofApp::keyReleased(int key){
-    // Deactivate gate sensors based on key
-    if(key-48 > 0 && key-48 < gates.size()){
-        long timeTriggered = ofGetElapsedTimeMillis();
-        string address = artnetAddrs.at(key-48);
-        gates[ofToInt(address)].sensor.add(0, timeTriggered);
-    }
+    
 }
 
 //--------------------------------------------------------------
 void ofApp::setupGUI(){
     guiParameters.setName("GUI");
-    guiParameters.add(timingThreshold.set("timing threshold (s)", 2.5,0.5,5.0));
-    guiParameters.add(distanceThreshold.set("dist threshold (m)", 1.9,0.5,4.5));
+    guiParameters.add(timingThreshold.set("timing threshold (ms)", 400,70,700));
+    guiParameters.add(distanceThreshold.set("dist threshold (m)", 2.2,2.0,4.5));
     guiParameters.add(debounceLower.set("debounce lower (ms)",100,20,400));
     guiParameters.add(debounceHigher.set("debounce higher (ms)",200,40,700));
     guiParameters.add(drawGatesToggle.set("draw gates", true));
     guiParameters.add(drawUsersToggle.set("draw users", true));
     gui.setup(guiParameters);
+    //    gui.saveToFile("settings.xml");
     gui.loadFromFile("settings.xml");
 }
 
