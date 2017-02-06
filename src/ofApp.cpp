@@ -83,7 +83,6 @@ void ofApp::setup(){
     
     gateDisplay.resize(NUM_GATE_DISPLAY);
     
-    ofLogToFile("log.txt", true);
 }
 
 //--------------------------------------------------------------
