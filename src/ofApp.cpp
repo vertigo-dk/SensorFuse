@@ -83,7 +83,6 @@ void ofApp::setup(){
     
     gateDisplay.resize(NUM_GATE_DISPLAY);
     
-    
 }
 
 //--------------------------------------------------------------
@@ -167,6 +166,7 @@ void ofApp::update(){
             msg_string += ofToString(ofGetElapsedTimeMillis());
             
         }
+    }
         for(int i = 0; i < soundObjects.size(); i++){
             ofxOscMessage m;
             m.setAddress("/SoundObject/" + ofToString(i));
@@ -186,7 +186,6 @@ void ofApp::update(){
             m.addFloatArg(u.getVelocity());
             senderVisual.sendMessage(m);
         }
-    }
 }
 
 //--------------------------------------------------------------
