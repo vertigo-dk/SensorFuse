@@ -83,7 +83,8 @@ public:
     ofParameter<int> debounceHigher;
     ofParameter<bool> drawGatesToggle;
     ofParameter<bool> drawUsersToggle;
-    
+    ofParameter<float> targetAvgVelocity;
+
     int oldMillis = 0;
 };
 

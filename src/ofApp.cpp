@@ -107,7 +107,7 @@ void ofApp::update(){
     }
     avgVelocity /= soundObjects.size();
     
-    float targetAvgVelocity = 5.0f;
+    //    float targetAvgVelocity = 15.0f;
     float pFactor = 0.05; // how fast does it change
     
     float deltaVelocity = targetAvgVelocity-avgVelocity;
@@ -167,6 +167,8 @@ void ofApp::update(){
             
         }
     }
+    
+    if(ofGetElapsedTimeMillis()/25 != oldMillis){
         for(int i = 0; i < soundObjects.size(); i++){
             ofxOscMessage m;
             m.setAddress("/SoundObject/" + ofToString(i));
@@ -186,6 +188,8 @@ void ofApp::update(){
             m.addFloatArg(u.getVelocity());
             senderVisual.sendMessage(m);
         }
+        oldMillis = ofGetElapsedTimeMillis()/25;
+    }
 }
 
 //--------------------------------------------------------------
@@ -254,6 +258,7 @@ void ofApp::keyReleased(int key){
 //--------------------------------------------------------------
 void ofApp::setupGUI(){
     guiParameters.setName("GUI");
+    guiParameters.add(targetAvgVelocity.set("targetAvgVelocity", 5.,0.1,20));
     guiParameters.add(timingThreshold.set("timing threshold (ms)", 400,70,700));
     guiParameters.add(distanceThreshold.set("dist threshold (m)", 2.2,2.0,4.5));
     guiParameters.add(debounceLower.set("debounce lower (ms)",100,20,400));
