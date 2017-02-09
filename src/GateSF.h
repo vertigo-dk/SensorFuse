@@ -39,6 +39,7 @@ public:
         this->soundObjects = soundObjects;
         this->timingThreshold = &parameterGroup->get("timing threshold (ms)").cast<int>();
         this->distThreshold = &parameterGroup->get("dist threshold (m)").cast<float>();
+        this->doUsersAttract = &parameterGroup->get("doUsersAttract").cast<bool>();
         this->sender = sender;
         this->gateId = gateId;
     }
@@ -117,7 +118,7 @@ public:
                         soundObjectFound = true;
                     }
                 }
-                if(soundObjectFound){
+                if(soundObjectFound && *doUsersAttract){
                     user.attractions.push_back(closestSoundObject->createAttraction(user.getAttractionParticle_ptr()));
                     user.setAttractedSoundObject(closestSoundObject);  // IMPORTANT
                 }
@@ -154,6 +155,7 @@ private:
     float lastActivationTime = -10;
     ofParameter<int>* timingThreshold;
     ofParameter<float>* distThreshold;
+    ofParameter<bool>* doUsersAttract;
     float distanceToNeighbour = 2.0;
     ofVec2f position;
     float width = 4.0;

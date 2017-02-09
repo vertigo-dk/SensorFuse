@@ -265,6 +265,7 @@ void ofApp::setupGUI(){
     guiParameters.add(debounceHigher.set("debounce higher (ms)",200,40,700));
     guiParameters.add(drawGatesToggle.set("draw gates", true));
     guiParameters.add(drawUsersToggle.set("draw users", true));
+    guiParameters.add(doUsersAttract.set("doUsersAttract", true));
     gui.setup(guiParameters);
     //    gui.saveToFile("settings.xml");
     gui.loadFromFile("settings.xml");
