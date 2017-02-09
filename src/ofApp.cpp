@@ -181,12 +181,14 @@ void ofApp::update(){
         
         for(auto& u : users){
             // send user position
-            ofxOscMessage m;
-            m.setAddress("/User/"+u.getId());
-            m.addFloatArg(u.getPosition().x - SPACING_ENDS); // position
-            m.addFloatArg(u.getLifespan());
-            m.addFloatArg(u.getVelocity());
-            senderVisual.sendMessage(m);
+            if(abs(u.getVelocity()) > 0){
+                ofxOscMessage m;
+                m.setAddress("/User/"+u.getId());
+                m.addFloatArg(u.getPosition().x - SPACING_ENDS); // position
+                m.addFloatArg(u.getLifespan());
+                m.addFloatArg(u.getVelocity());
+                senderVisual.sendMessage(m);
+            }
         }
         oldMillis = ofGetElapsedTimeMillis()/25;
     }
