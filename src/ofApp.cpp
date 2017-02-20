@@ -261,7 +261,7 @@ void ofApp::keyReleased(int key){
 void ofApp::setupGUI(){
     guiParameters.setName("GUI");
     guiParameters.add(targetAvgVelocity.set("targetAvgVelocity", 5.,0.1,20));
-    guiParameters.add(timingThreshold.set("timing threshold (ms)", 400,70,700));
+    guiParameters.add(timingThreshold.set("timing threshold (ms)", 400,70,4000));
     guiParameters.add(distanceThreshold.set("dist threshold (m)", 2.2,2.0,4.5));
     guiParameters.add(debounceLower.set("debounce lower (ms)",100,20,400));
     guiParameters.add(debounceHigher.set("debounce higher (ms)",200,40,700));
