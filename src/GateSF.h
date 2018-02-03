@@ -31,7 +31,7 @@ public:
     }
     
     
-    GateSF(int gateId, string address, ofVec2f position, vector<User>* users, World2D_ptr* world, ofParameterGroup* parameterGroup, ofxOscSender* sender, vector<SoundObject>* soundObjects){
+    GateSF(int gateId, string address, ofVec2f position, vector<User>* users, World2D_ptr* world, ofParameterGroup* parameterGroup, ofxOscSender* sender_1, ofxOscSender* sender_2, vector<SoundObject>* soundObjects){
         this->artnetAddress = address;
         this->position = position;
         this->users = users;
@@ -40,7 +40,8 @@ public:
         this->timingThreshold = &parameterGroup->get("timing threshold (ms)").cast<int>();
         this->distThreshold = &parameterGroup->get("dist threshold (m)").cast<float>();
         this->doUsersAttract = &parameterGroup->get("doUsersAttract").cast<bool>();
-        this->sender = sender;
+        this->sender1 = sender_1;
+        this->sender2 = sender_2;
         this->gateId = gateId;
     }
     
@@ -129,11 +130,12 @@ public:
             
             // SEND OSC gate 1
 
-                ofxOscMessage m;
-                m.setAddress("/Gate/"+ofToString(gateId));
-                m.addInt32Arg(1);
-                sender->sendMessage(m);
-                
+            ofxOscMessage m;
+            m.setAddress("/Gate/"+ofToString(gateId));
+            m.addInt32Arg(1);
+            sender1->sendMessage(m);
+            sender2->sendMessage(m);
+            
    
 
       
@@ -144,7 +146,8 @@ private:
     //MEMBERS
     string artnetAddress = "";
     int triggerVal = 0;     //Current Trigger Value
-    ofxOscSender* sender;
+    ofxOscSender* sender1;
+    ofxOscSender* sender2;
     
     // Stuff from PositionEstimator
     vector<GateSF*> neighbours;

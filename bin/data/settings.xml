@@ -10,7 +10,7 @@
 		<debounce_higher__ms_>200</debounce_higher__ms_>
 		<draw_gates>1</draw_gates>
 		<draw_users>1</draw_users>
-	<timing_threshold__ms_>400</timing_threshold__ms_>
+	<timing_threshold__ms_>2015</timing_threshold__ms_>
 	<targetAvgVelocity>5</targetAvgVelocity>
 		<doUsersAttract>0</doUsersAttract>
 	</GUI>

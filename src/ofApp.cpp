@@ -54,7 +54,7 @@ void ofApp::setup(){
     for(auto& address : artnetAddrs){
         // Create gate
         ofVec2f position = ofVec2f((2.0*i)+SPACING_ENDS, INSTALLATION_WIDTH/2+SPACING_SIDE);
-        gates[ofToInt(address)] = GateSF(i, address,position,&users,&world, &guiParameters, &senderVisual, &soundObjects);
+        gates[ofToInt(address)] = GateSF(i, address,position,&users,&world, &guiParameters, &senderVisual, &senderAudio, &soundObjects);
         i++;
     }
     
@@ -135,7 +135,7 @@ void ofApp::update(){
     //PARSE OSC
     while( receiver.hasWaitingMessages() ){
         ofxOscMessage m;
-        receiver.getNextMessage( &m );
+        receiver.getNextMessage( m );
         
         string msg_string;
         msg_string = m.getAddress(); //expect "/BeamBreak/[artnetaddr] [0-1]"
@@ -156,8 +156,8 @@ void ofApp::update(){
             //add trigger value and timestamp to sensor@artnetAddr
             // check if entry exists in map
             map<int,GateSF>::iterator i = gates.find(artnet);
-            if (!(i == gates.end())) { gates[artnet].activate();
-                
+            if (!(i == gates.end())) {
+                gates[artnet].activate();
             }
             
             msg_string += " value=";
@@ -168,6 +168,7 @@ void ofApp::update(){
         }
     }
     
+    // SENDING OSC
     if(ofGetElapsedTimeMillis()/25 != oldMillis){
         for(int i = 0; i < soundObjects.size(); i++){
             ofxOscMessage m;
@@ -188,6 +189,7 @@ void ofApp::update(){
                 m.addFloatArg(u.getLifespan());
                 m.addFloatArg(u.getVelocity());
                 senderVisual.sendMessage(m);
+                senderAudio.sendMessage(m);
             }
         }
         oldMillis = ofGetElapsedTimeMillis()/25;
